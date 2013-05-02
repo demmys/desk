@@ -1,0 +1,11 @@
+/*
+ * main entry point
+ */
+//main :: a -> 1;
+main = plus (1 + 2) (3 + 4);
+
+plus :: Int -> Int -> Int;
+plus x y = x + y;
+
+zaru :: Char -> Char;
+zaru c = 'a';

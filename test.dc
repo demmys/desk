@@ -1,0 +1,7 @@
+//this is test for my compiler
+
+/*
+ * main entry point
+ */
+main :: Int -> 1;
+main() = 31 + (4 - 1 * 5 / 9);

@@ -1,0 +1,23 @@
+/*
+ * main entry point
+ */
+main :: Int -> Char** -> 1;
+main(argc, argv) = primes(1000);
+
+primes :: Int -> Int*;
+primes(n) = sieve(list(2, n));
+
+list :: Int -> Int -> Int*;
+list(b, b) = b : [];
+list(a, b) = a : list(++a, b);
+
+sieve :: Int* -> Int*;
+sieve(l) = sieve_(*l, ++l);
+
+sieve1 :: Int -> Int -> Int*;
+sieve1(p, []) = p : [];
+sieve1(p, xs) = p : sieve(sieve2(p, *xs, ++xs));
+
+sieve2 :: Int -> Int -> Int* -> Int*;
+sieve2(p, x, []) = x % p ? x : [] | [];
+sieve2(p, x, xs) = x % p ? x : sieve2(p, *xs, ++xs) | sieve2(p, *xs, ++xs);
