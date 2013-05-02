@@ -1,7 +1,7 @@
 /*
  * main entry point
  */
-//main :: a -> 1;
+//main :: -> 1;
 main = plus (1 + 2) (3 + 4);
 
 plus :: Int -> Int -> Int;

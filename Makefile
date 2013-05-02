@@ -1,9 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -O2
 
-TARGET = dpfc
+TARGET = desk
 OBJS = lex.yy.o
 MADE = $(TARGET) lex.yy.c
+LEX = desk_.l
 
 all: $(TARGET)
 
@@ -19,5 +20,5 @@ clear: clean
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-lex.yy.c: dpfc_.l
-	lex dpfc_.l
+lex.yy.c: $(LEX)
+	lex $<
