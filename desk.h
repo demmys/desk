@@ -90,4 +90,57 @@ typedef enum{
 /*
  * function prototype
  */
+// TODO
+void main_define(Statement *statement){
+    FunctionDefinition *fd;
+    FunctionDefinition *pos;
+    DKC_Compiler *compiler;
 
+    if (dkc_search_function(identifier)
+        || dkc_search_declaration(identifier, NULL)) {
+        dkc_compile_error(dkc_get_current_compiler()->current_line_number,
+                          FUNCTION_MULTIPLE_DEFINE_ERR,
+                          STRING_MESSAGE_ARGUMENT, "name", identifier,
+                          MESSAGE_ARGUMENT_END);
+        return;
+    }
+    fd = create_function_definition(type, identifier, parameter_list,
+                                    block);
+    if (block) {
+        block->type = FUNCTION_BLOCK;
+        block->parent.function.function = fd;
+    }
+
+    compiler = dkc_get_current_compiler();
+    if (compiler->function_list) {
+        for (pos = compiler->function_list; pos->next; pos = pos->next)
+            ;
+        pos->next = fd;
+    } else {
+        compiler->function_list = fd;
+    }
+}
+
+Statement *create_expression_statement(Expression *expression){
+    Statement *st;
+
+    st = alloc_statement(EXPRESSION_STATEMENT);
+    st -> u.expression_s = expression;
+
+    return st;
+}
+
+Expression *create_binary_expression(ExpressionKind operator, Expression *left, Expression *right){
+    Expression *exp;
+    exp = alloc_expression(operator);
+    exp -> u.binary_expression.left = left;
+    exp -> u.binary_expression.right = right;
+    return exp;
+}
+
+Expression *create_minus_expression(Expression *operand){
+    Expression *exp;
+    exp = alloc_expression(MINUS_EXPRESSION);
+    exp -> u.minus_expression = operand;
+    return exp;
+}
