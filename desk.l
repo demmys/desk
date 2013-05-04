@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include "y.tab.h"
 
 int yywrap(){
     return 1;
@@ -17,10 +18,20 @@ int yywrap(){
 <INITIAL>";" return SEMICOLON;
 <INITIAL>"::" return DEF;
 <INITIAL>"->" return IMPL;
+<INITIAL>"main" return MAIN;
 
-<INITIAL>"Int" return INT_TYPE;
-<INITIAL>"Float" return FLOAT_TYPE;
-<INITIAL>"Char" return CHAR_TYPE;
+<INITIAL>"Int" {
+    yylval.identifier = create_type_identifier(yytext);
+    return TYPE_IDENTIFIER;
+}
+<INITIAL>"Float" {
+    yylval.identifier = create_type_identifier(yytext);
+    return TYPE_IDENTIFIER;
+}
+<INITIAL>"Char" {
+    yylval.identifier = create_type_identifier(yytext);
+    return TYPE_IDENTIFIER;
+}
 
 <INITIAL>[a-z][A-Za-z_0-9]* {
     yylval.identifier = create_identifier(yytext);

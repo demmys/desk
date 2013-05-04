@@ -18,6 +18,7 @@ int yywrap(void){
 <INITIAL>";" puts("SEMICOLON");
 <INITIAL>"::" puts("DEF");
 <INITIAL>"->" puts("IMPL");
+<INITIAL>"main" puts("MAIN");
 
 <INITIAL>"Int" puts("INT_TYPE");
 <INITIAL>"Float" puts("FLOAT_TYPE");
