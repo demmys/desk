@@ -55,7 +55,7 @@ int yywrap(){
 }
 <INITIAL>[0-9]+\.[0-9]* {
     Expression *expression = alloc_expression(FLOAT_EXPRESSION);
-    sscanf(yytext, "%lf", &expression -> u.int_value);
+    sscanf(yytext, "%lf", &expression -> u.float_value);
     yyval.expression = expression;
     return FLOAT_LITERAL;
 }
