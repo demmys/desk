@@ -5,13 +5,20 @@
 %union{
     char *identifier;
     Expression *expression;
+    Statement *statement;
 }
+/*
+ * terminal symbol
+ */
 %token ADD SUB MUL DIV MOD LP RP BOUND SEMICOLON DEF IMPL MAIN
-%token <identifier> IDENTIFIER
-%token <identifier> TYPE_IDENTIFIER
-%token <expression> INT_LITERAL
-%token <expression> FLOAT_LITERAL
-%token <expression> CHAR_LITERAL
+%token <identifier> IDENTIFIER TYPE_IDENTIFIER
+%token <expression> INT_LITERAL FLOAT_LITERAL CHAR_LITERAL
+/*
+ * non-terminal symbol
+ */
+%type <expression> expression add_expression mul_expression
+unary_expression call_expression primary_expression
+%type <statement> statement
 %%
 /*
  * unit
@@ -19,22 +26,33 @@
 unit
     : definition
     | unit definition;
+
 /*
  * definition
  */
 definition
-    : main_definition
-    | function_definition;
+    : main_definition;
+    /* | function_definition; */
 
 main_definition
-    : MAIN BOUND statement;
+    : MAIN BOUND statement {
+        main_define($3); //TODO ref: dkc_function_define
+    };
 
+/*
 function_definition
-    : IDENTIFIER parameters BOUND statement;
+    : IDENTIFIER parameters BOUND statement {
+        function_define($1, $2, $3);
+    };
 
-parameters
-    : IDENTIFIER
-    | parameters IDENTIFIER;
+parameter_list
+    : IDENTIFIER {
+        $$ = create_parameter($1);
+    }
+    | parameter_list IDENTIFIER {
+        $$ = chain_parameter($1, $2);
+    };
+*/
 
 /*
  * type definition
@@ -53,7 +71,10 @@ type
  * body statement(right-hand side)
  */
 statement
-    : expression SEMICOLON;
+    : expression SEMICOLON{
+        //TODO ref: dkc_create_expression_statement
+        $$ = create_expression_statement($1);
+    };
 
 /*
  * expression
@@ -63,25 +84,40 @@ expresson
 
 add_expression
     : mul_expression
-    | add_expression ADD mul_expression
-    | add_expression SUB mul_expression;
+    | add_expression ADD mul_expression {
+        //TODO ref: dkc_create_binary_expression
+        $$ = create_binary_expression(ADD_EXPRESSION, $1, $3);
+    }
+    | add_expression SUB mul_expression {
+        $$ = create_binary_expression(SUB_EXPRESSION, $1, $3);
+    };
 
 mul_expression
     : unary_expression
-    | mul_expression MUL unary_expression
-    | mul_expression DIV unary_expression
-    | mul_expression MOD unary_expression;
+    | mul_expression MUL unary_expression {
+        $$ = create_binary_expression(MUL_EXPRESSION, $1, $3);
+    }
+    | mul_expression DIV unary_expression {
+        $$ = create_binary_expression(DIV_EXPRESSION, $1, $3);
+    }
+    | mul_expression MOD unary_expression {
+        $$ = create_binary_expression(MOD_EXPRESSION, $1, $3);
+    };
 
 unary_expression
-    : term_expression
-    | SUB unary_expression;
+    : call_expression
+    | SUB unary_expression{
+        //TODO ref: dkc_create_minus_expression
+        $$ = create_minus_expression($2);
+    };
 
-term_expression
-    : primary_expression
+call_expression
+    : primary_expression;
 
 primary_expression
-    : LP expression RP
-    | IDENTIFIER
+    : LP expression RP {
+        $$ = $2;
+    }
     | INT_LITERAL
     | FLOAT_LITERAL
     | CHAR_LITERAL;
