@@ -1,4 +1,9 @@
+#ifndef STORAGE_H_INCLUDE
+#define STORAGE_H_INCLUDE
+#include <stdio.h>
+#include <stdlib.h>
 #define DEFAULT_PAGE_SIZE 1024
+#define max(x, y) (((x) > (y)) ? (x) : (y))
 
 typedef union{
     long l_dummy;
@@ -22,5 +27,7 @@ typedef struct {
  * storage.c function prototype
  */
 Storage *open_storage(int page_size);
-void *storage_malloc(Storage storage, size_t size);
-void dispose_storage(Storage storage);
+void *storage_malloc(Storage *storage, size_t size);
+void dispose_storage(Storage *storage);
+
+#endif // STORAGE_H_INCLUDE

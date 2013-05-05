@@ -1,22 +1,59 @@
+#ifndef DESK_H_INCLUDED
+#define DESK_H_INCLUDED
 #include <stdio.h>
+#include <stdlib.h>
 #include "storage.h"
 
 /*
- * Compiler
+ * enumerated type
  */
-typedef struct {
-    Storage compile_storage;
-    Statement *main_statement; // FunctionList *function_list;
-    //int function_count;
-    int current_line_number;
-    //InputMode input_mode;
-    //Encoding source_encoding;
-} Compiler;
+typedef enum{
+    INT_TYPE,
+    FLOAT_TYPE,
+    CHAR_TYPE
+} BasicType;
+
+typedef enum{
+    INT_EXPRESSION = 1,
+    FLOAT_EXPRESSION,
+    CHAR_EXPRESSION,
+    ADD_EXPRESSION,
+    SUB_EXPRESSION,
+    MUL_EXPRESSION,
+    DIV_EXPRESSION,
+    MOD_EXPRESSION,
+    MINUS_EXPRESSION,
+    EXPRESSION_KIND_COUNT_PLUS_1
+} ExpressionKind;
+
+typedef enum{
+    EXPRESSION_STATEMENT = 1,
+    STATEMENT_TYPE_COUNT_PLUS_1
+} StatementType;
 
 /*
- * Expression
+ * struct declaration
  */
-typedef struct Expression_tag{
+typedef struct Compiler_tag Compiler;
+typedef struct Expression_tag Expression;
+//typedef struct BinaryExpression_tag BinaryExpression;
+typedef struct Statement_tag Statement;
+
+struct Compiler_tag{
+    Storage *compile_storage;
+    Statement *main_statement; // FunctionList *function_list;
+    //int function_count;
+    //int current_line_number;
+    //InputMode input_mode;
+    //Encoding source_encoding;
+};
+
+typedef struct {
+    Expression  *left;
+    Expression  *right;
+} BinaryExpression;
+
+struct Expression_tag{
     BasicType type; // TypeSpecifier *type;
     ExpressionKind kind;
     //int line_number;
@@ -27,7 +64,15 @@ typedef struct Expression_tag{
         BinaryExpression binary_expression;
         struct Expression_tag *minus_expression;
     } u;
-} Expression;
+};
+
+struct Statement_tag{
+    StatementType type;
+    //int line_number;
+    union{
+        Expression *expression_s;
+    } u;
+};
 
 // TypeSpecifier
 /*
@@ -60,48 +105,6 @@ typedef struct ParameterList_tag{
 } ParameterList;
 */
 
-typedef enum{
-    INT_TYPE,
-    FLOAT_TYPE,
-    CHAR_TYPE
-} BasicType;
-
-// ExpressionKind
-typedef enum{
-    INT_EXPRESSION = 1,
-    FLOAT_EXPRESSION,
-    CHAR_EXPRESSION,
-    ADD_EXPRESSION,
-    SUB_EXPRESSION,
-    MUL_EXPRESSION,
-    DIV_EXPRESSION,
-    MOD_EXPRESSION,
-    MINUS_EXPRESSION,
-    EXPRESSION_KIND_COUNT_PLUS_1
-} ExpressionKind;
-
-// BinaryExpression
-typedef struct {
-    Expression  *left;
-    Expression  *right;
-} BinaryExpression;
-
-/*
- * Statement
- */
-typedef struct{
-    StatementType type;
-    //int line_number;
-    union{
-        Expression *expression_s;
-    } u;
-} Statement;
-
-typedef enum{
-    EXPRESSION_STATEMENT = 1,
-    STATEMENT_TYPE_COUNT_PLUS_1
-} StatementType;
-
 /*
  * create.c function prototype
  */
@@ -110,7 +113,7 @@ Statement *create_expression_statement(Expression *expression);
 Expression *create_binary_expression(ExpressionKind operator, Expression *left, Expression *right);
 Expression *create_minus_expression(Expression *operand);
 Expression* alloc_expression(ExpressionKind kind);
-static Statement* alloc_statement(StatementType type);
+Statement* alloc_statement(StatementType type);
 
 /*
  * compiler.c function prototype
@@ -120,3 +123,6 @@ void set_current_compiler(Compiler *compiler);
 void *compiler_storage_malloc(size_t size);
 Compiler *create_compiler();
 void dispose_compiler(Compiler *compiler);
+void compile_error();
+
+#endif // DESK_H_INCLUDED

@@ -43,14 +43,14 @@ Expression* alloc_expression(ExpressionKind kind){
     Expression *exp;
 
     exp = compiler_storage_malloc(sizeof(Expression));
-    exp -> type = NULL;
+    exp -> type = 0;
     exp -> kind = kind;
     //exp -> line_number = get_current_compiler() -> current_line_number;
     //
     return exp;
 }
 
-static Statement* alloc_statement(StatementType type){
+Statement* alloc_statement(StatementType type){
     Statement *st;
 
     st = compiler_storage_malloc(sizeof(Statement));

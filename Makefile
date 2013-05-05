@@ -2,9 +2,10 @@ CC = gcc
 CFLAGS = -Wall -O2
 
 TARGET = desk
-OBJS = lex.yy.o
-MADE = $(TARGET) lex.yy.c
-LEX = desk_.l
+OBJS = y.tab.o lex.yy.o main.o compiler.o create.o storage.o
+MADE = $(TARGET) lex.yy.c y.tab.h y.tab.c
+LEX = desk.l
+YACC = desk.y
 
 all: $(TARGET)
 
@@ -20,5 +21,8 @@ clear: clean
 .c.o:
 	$(CC) $(CFLAGS) -c $<
 
-lex.yy.c: $(LEX)
+lex.yy.c: $(LEX) y.tab.h
 	lex $<
+
+y.tab.h: $(YACC)
+	yacc -d $<

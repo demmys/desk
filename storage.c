@@ -1,7 +1,7 @@
 #include "storage.h"
 
 Storage *open_storage(int page_size){
-    Storage storage;
+    Storage *storage;
 
     storage = malloc(sizeof(Storage));
     storage -> page_list = NULL;
@@ -14,7 +14,7 @@ Storage *open_storage(int page_size){
     return storage;
 }
 
-void *storage_malloc(Storage storage, size_t size){
+void *storage_malloc(Storage *storage, size_t size){
     int cell_num;
     MemoryPage *new_page;
     void *p;
@@ -39,7 +39,7 @@ void *storage_malloc(Storage storage, size_t size){
     return p;
 }
 
-void dispose_storage(Storage storage){
+void dispose_storage(Storage *storage){
     MemoryPage *temp;
     
     while(storage -> page_list){

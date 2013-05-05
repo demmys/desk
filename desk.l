@@ -1,10 +1,13 @@
 %{
+#include "desk.h"
 #include "y.tab.h"
 
-int yywrap(){
+int yywrap(void){
     return 1;
 }
 %}
+%start L_COMMENT R_COMMENT
+%option nounput
 %%
 <INITIAL>"+" return ADD;
 <INITIAL>"-" return SUB;
@@ -43,25 +46,25 @@ int yywrap(){
 <INITIAL>[1-9][0-9]* {
     Expression *expression = alloc_expression(INT_EXPRESSION);
     sscanf(yytext, "%d", &expression -> u.int_value);
-    yyval.expression = expression;
+    yylval.expression = expression;
     return INT_LITERAL;
 }
 <INITIAL>"0" {
     Expression *expression = alloc_expression(INT_EXPRESSION);
     expression -> u.int_value = 0;
-    yyval.expression = expression;
+    yylval.expression = expression;
     return INT_LITERAL;
 }
 <INITIAL>[0-9]+\.[0-9]* {
     Expression *expression = alloc_expression(FLOAT_EXPRESSION);
     sscanf(yytext, "%lf", &expression -> u.float_value);
-    yyval.expression = expression;
+    yylval.expression = expression;
     return FLOAT_LITERAL;
 }
 <INITIAL>'.' {
     Expression *expression = alloc_expression(CHAR_EXPRESSION);
     expression -> u.char_value = yytext[1];
-    yyval.expression = expression;
+    yylval.expression = expression;
     return CHAR_LITERAL;
 }
 

@@ -21,14 +21,14 @@ void *compiler_storage_malloc(size_t size){
 }
 
 Compiler *create_compiler(){
-    Storage storage;
+    Storage *storage;
     Compiler *compiler;
     
     storage = open_storage(0);
-    compiler = storage_malloc(storage, sizeof(struct Compiler));
+    compiler = storage_malloc(storage, sizeof(Compiler));
     compiler -> compile_storage = storage;
     compiler -> main_statement = NULL;
-    compiler -> current_line_number = 1;
+    //compiler -> current_line_number = 1;
     set_current_compiler(compiler);
     return compiler;
 }
@@ -36,4 +36,9 @@ Compiler *create_compiler(){
 void dispose_compiler(Compiler *compiler){
     free(compiler -> main_statement);
     dispose_storage(compiler -> compile_storage);
+}
+
+void compile_error(){
+    fprintf(stderr, "compile error!");
+    exit(1);
 }

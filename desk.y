@@ -78,7 +78,7 @@ statement
 /*
  * expression
  */
-expresson
+expression
     : add_expression;
 
 add_expression
