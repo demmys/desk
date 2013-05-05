@@ -34,7 +34,6 @@ Compiler *create_compiler(){
 }
 
 void dispose_compiler(Compiler *compiler){
-    free(compiler -> main_statement);
     dispose_storage(compiler -> compile_storage);
 }
 

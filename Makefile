@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O2
+CFLAGS = -Wall -O2 -g
 
 TARGET = desk
 OBJS = lex.yy.o y.tab.o main.o compiler.o create.o storage.o

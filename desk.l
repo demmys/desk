@@ -69,7 +69,7 @@ int yywrap(void){
 }
 
 <INITIAL>[ \t] ;
-<INITIAL>\n puts("LF");
+<INITIAL>\n /*increment_line_number()*/;
 
 <INITIAL>"/*" BEGIN R_COMMENT;
 <R_COMMENT>. ;
