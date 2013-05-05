@@ -1,6 +1,18 @@
 #include <stdio.h>
 
 /*
+ * Compiler
+ */
+typedef struct {
+    MEM_Storage compile_storage;
+    Statement *main_statement; // FunctionList *function_list;
+    int function_count;
+    int current_line_number;
+    //InputMode input_mode;
+    //Encoding source_encoding;
+} Compiler;
+
+/*
  * Expression
  */
 typedef struct Expression_tag{
@@ -94,32 +106,13 @@ typedef enum{
  */
 // TODO
 void main_define(Statement *statement){
-    FunctionDefinition *fd;
-    FunctionDefinition *pos;
-    DKC_Compiler *compiler;
+    Compiler *compiler;
 
-    if (dkc_search_function(identifier)
-        || dkc_search_declaration(identifier, NULL)) {
-        dkc_compile_error(dkc_get_current_compiler()->current_line_number,
-                          FUNCTION_MULTIPLE_DEFINE_ERR,
-                          STRING_MESSAGE_ARGUMENT, "name", identifier,
-                          MESSAGE_ARGUMENT_END);
-        return;
-    }
-    fd = create_function_definition(type, identifier, parameter_list,
-                                    block);
-    if (block) {
-        block->type = FUNCTION_BLOCK;
-        block->parent.function.function = fd;
-    }
-
-    compiler = dkc_get_current_compiler();
-    if (compiler->function_list) {
-        for (pos = compiler->function_list; pos->next; pos = pos->next)
-            ;
-        pos->next = fd;
-    } else {
-        compiler->function_list = fd;
+    compiler = get_current_compiler();
+    if(compiler -> main_statement){
+        compile_error();
+    } else{
+        compiler -> main_statement = statement;
     }
 }
 
@@ -148,11 +141,11 @@ Expression *create_minus_expression(Expression *operand){
 }
 
 /*
- * strage allocable
+ * storage allocable
  */
 Expression* alloc_expression(ExpressionKind kind){
     Expression *exp;
-    exp = strage_malloc(sizeof(Expression));
+    exp = storage_malloc(sizeof(Expression));
     exp -> type = NULL;
     exp -> kind = kind;
     //exp -> line_number = get_current_compiler() -> current_line_number;
@@ -161,7 +154,7 @@ Expression* alloc_expression(ExpressionKind kind){
 
 static Statement* alloc_statement(StatementType type){
     Statement *st;
-    st = strage_malloc(sizeof(Statement));
+    st = storage_malloc(sizeof(Statement));
     st -> type = type;
     //st -> line_number = get_current_compiler() -> current_line_number;
     return st;

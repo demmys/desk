@@ -1,5 +1,4 @@
 %{
-#include <stdio.h>
 #include "y.tab.h"
 
 int yywrap(){
@@ -21,24 +20,24 @@ int yywrap(){
 <INITIAL>"main" return MAIN;
 
 <INITIAL>"Int" {
-    yylval.identifier = create_type_identifier(yytext);
+    //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
 }
 <INITIAL>"Float" {
-    yylval.identifier = create_type_identifier(yytext);
+    //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
 }
 <INITIAL>"Char" {
-    yylval.identifier = create_type_identifier(yytext);
+    //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
 }
 
 <INITIAL>[a-z][A-Za-z_0-9]* {
-    yylval.identifier = create_identifier(yytext);
+    //yylval.identifier = create_identifier(yytext);
     return IDENTIFIER;
 }
 <INITIAL>[A-Z][A-Za-z_0-9]* {
-    yylval.identifier = create_type_identifier(yytext);
+    //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
 }
 <INITIAL>[1-9][0-9]* {
@@ -79,6 +78,10 @@ int yywrap(){
 <L_COMMENT>\n {
     //increment_line_number();
     BEGIN INITIAL;
+}
+
+<INITIAL>. {
+    compile_error();
 }
 %%
 int main(int argc, char *argv[]){

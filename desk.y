@@ -1,5 +1,5 @@
 %{
-#include <stdio.h>
+#include "desk.h"
 #define YYDEBUG 1
 %}
 %union{
