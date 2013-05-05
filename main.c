@@ -1,8 +1,8 @@
-#include "y.tab.h"
 #include "desk.h"
 
 int main(int argc, char *argv[]){
     extern int yyparse(void);
+    extern File *yyin;
     Compiler *compiler;
     FILE *fp;
 
@@ -22,8 +22,8 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Error!\n");
         exit(1);
     }
-    fix_tree(compiler);
-    generate(compiler);
+    //fix_tree(compiler);
+    //generate(compiler);
     dispose_compiler(compiler);
 
     return 0;
