@@ -71,13 +71,13 @@ int yywrap(){
 
 <INITIAL>"/*" BEGIN R_COMMENT;
 <R_COMMENT>. ;
-<R_COMMENT>\n increment_line_number();
+<R_COMMENT>\n /*increment_line_number()*/;
 <R_COMMENT>"*/" BEGIN INITIAL;
 
 <INITIAL>"//" BEGIN L_COMMENT;
 <L_COMMENT>. ;
 <L_COMMENT>\n {
-    increment_line_number();
+    //increment_line_number();
     BEGIN INITIAL;
 }
 %%

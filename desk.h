@@ -4,9 +4,9 @@
  * Expression
  */
 typedef struct Expression_tag{
-    TypeSpecifier *type;
+    BasicType type; // TypeSpecifier *type;
     ExpressionKind kind;
-    int line_number;
+    //int line_number;
     union{
         int int_value;
         double float_value;
@@ -17,16 +17,11 @@ typedef struct Expression_tag{
 } Expression;
 
 // TypeSpecifier
+/*
 typedef struct{
     BasicType basic_type;
     TypeDerive *derive;
 } TypeSpecifier;
-
-typedef enum{
-    INT_TYPE,
-    FLOAT_TYPE,
-    CHAR_TYPE
-} BasicType;
 
 typedef struct TypeDerive_tag{
     DeriveTag tag;
@@ -50,6 +45,13 @@ typedef struct ParameterList_tag{
     int line_number;
     struct ParameterList_tag *next;
 } ParameterList;
+*/
+
+typedef enum{
+    INT_TYPE,
+    FLOAT_TYPE,
+    CHAR_TYPE
+} BasicType;
 
 // ExpressionKind
 typedef enum{
@@ -76,7 +78,7 @@ typedef struct {
  */
 typedef struct{
     StatementType type;
-    int line_number;
+    //int line_number;
     union{
         Expression *expression_s;
     } u;
@@ -143,4 +145,24 @@ Expression *create_minus_expression(Expression *operand){
     exp = alloc_expression(MINUS_EXPRESSION);
     exp -> u.minus_expression = operand;
     return exp;
+}
+
+/*
+ * strage allocable
+ */
+Expression* alloc_expression(ExpressionKind kind){
+    Expression *exp;
+    exp = strage_malloc(sizeof(Expression));
+    exp -> type = NULL;
+    exp -> kind = kind;
+    //exp -> line_number = get_current_compiler() -> current_line_number;
+    return exp;
+}
+
+static Statement* alloc_statement(StatementType type){
+    Statement *st;
+    st = strage_malloc(sizeof(Statement));
+    st -> type = type;
+    //st -> line_number = get_current_compiler() -> current_line_number;
+    return st;
 }

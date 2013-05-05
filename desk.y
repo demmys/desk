@@ -72,7 +72,6 @@ type
  */
 statement
     : expression SEMICOLON{
-        //TODO ref: dkc_create_expression_statement
         $$ = create_expression_statement($1);
     };
 
@@ -85,7 +84,6 @@ expresson
 add_expression
     : mul_expression
     | add_expression ADD mul_expression {
-        //TODO ref: dkc_create_binary_expression
         $$ = create_binary_expression(ADD_EXPRESSION, $1, $3);
     }
     | add_expression SUB mul_expression {
@@ -107,7 +105,6 @@ mul_expression
 unary_expression
     : call_expression
     | SUB unary_expression{
-        //TODO ref: dkc_create_minus_expression
         $$ = create_minus_expression($2);
     };
 
