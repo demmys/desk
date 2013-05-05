@@ -85,6 +85,8 @@ int yywrap(){
 }
 %%
 int main(int argc, char *argv[]){
+    extern int yyparse(void);
+    Compiler *compiler;
     FILE *fp;
 
     // open file
@@ -98,5 +100,14 @@ int main(int argc, char *argv[]){
     }
     yyin = fp;
 
-    yylex();
+    compiler = create_compiler();
+    if(yyparse()){
+        fprintf(stderr, "Error!\n");
+        exit(1);
+    }
+    fix_tree(compiler);
+    generate(compiler);
+    dispose_compiler(compiler);
+
+    return 0;
 }

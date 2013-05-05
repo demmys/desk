@@ -1,12 +1,87 @@
 #include <stdio.h>
 
 /*
+ * Storage
+ */
+#define DEFAULT_PAGE_SIZE 1024
+
+typedef union{
+    long l_dummy;
+    double d_dummy;
+    void *p_dummy;
+} Cell;
+
+typedef struct MemoryPage_tag{
+    int cell_num;
+    int use_cell_num;
+    struct MemoryPage_tag *next;
+    Cell cell[1];
+} MemoryPage;
+
+typedef MemoryPage *MemoryPageList;
+
+typedef struct {
+    MemoryPageList *page_list;
+    int current_page_size;
+} Storage;
+
+Storage *open_storage(int page_size){
+    Storage storage;
+
+    storage = malloc(sizeof(Storage));
+    storage -> page_list = NULL;
+    if(page_size > 0){
+        storage -> current_page_size = page_size;
+    } else{
+        storage -> current_page_size = DEFAULT_PAGE_SIZE;
+    }
+
+    return storage;
+}
+
+void *storage_malloc(Storage storage, size_t size){
+    int cell_num;
+    MemoryPage *new_page;
+    void *p;
+
+    cell_num = ((size - 1) / sizeof(Cell)) + 1;
+
+    if(storage -> page_list && (storage -> page_list -> use_cell_num < storage -> page_list -> cell_num)){
+        p = &(storage -> page_list -> cell[storage -> page_list -> use_cell_num]);
+        storage -> page_list -> use_cell_num += cell_num;
+    } else{
+        int alloc_cell_num;
+
+        alloc_cell_num = max(cell_num, storage -> current_page_size);
+        new_page = malloc(sizeof(MemoryPage) + sizeof(Cell) * (alloc_cell_num - 1));
+        new_page -> next = storage -> page_list;
+        new_page -> cell_num = alloc_cell_num;
+        storage -> page_list = new_page;
+        p = &(new_page -> cell[0]);
+        new_page -> use_cell_num = cell_num;
+    }
+
+    return p;
+}
+
+void dispose_storage(Storage storage){
+    MemoryPage *temp;
+    
+    while(storage -> page_list){
+        temp = storage -> page_list -> next;
+        free(storage -> page_list);
+        storage -> page_list = temp;
+    }
+    free(storage);
+}
+
+/*
  * Compiler
  */
 typedef struct {
-    MEM_Storage compile_storage;
+    Storage compile_storage;
     Statement *main_statement; // FunctionList *function_list;
-    int function_count;
+    //int function_count;
     int current_line_number;
     //InputMode input_mode;
     //Encoding source_encoding;
@@ -127,16 +202,20 @@ Statement *create_expression_statement(Expression *expression){
 
 Expression *create_binary_expression(ExpressionKind operator, Expression *left, Expression *right){
     Expression *exp;
+
     exp = alloc_expression(operator);
     exp -> u.binary_expression.left = left;
     exp -> u.binary_expression.right = right;
+
     return exp;
 }
 
 Expression *create_minus_expression(Expression *operand){
     Expression *exp;
+
     exp = alloc_expression(MINUS_EXPRESSION);
     exp -> u.minus_expression = operand;
+
     return exp;
 }
 
@@ -145,17 +224,62 @@ Expression *create_minus_expression(Expression *operand){
  */
 Expression* alloc_expression(ExpressionKind kind){
     Expression *exp;
-    exp = storage_malloc(sizeof(Expression));
+
+    exp = compiler_storage_malloc(sizeof(Expression));
     exp -> type = NULL;
     exp -> kind = kind;
     //exp -> line_number = get_current_compiler() -> current_line_number;
+    //
     return exp;
 }
 
 static Statement* alloc_statement(StatementType type){
     Statement *st;
-    st = storage_malloc(sizeof(Statement));
+
+    st = compiler_storage_malloc(sizeof(Statement));
     st -> type = type;
     //st -> line_number = get_current_compiler() -> current_line_number;
+    
     return st;
+}
+
+/*
+ * utilities
+ */
+static Compiler *static_current_compiler;
+
+Compiler *get_current_compiler(){
+    return static_current_compiler;
+}
+
+void set_current_compiler(Compiler *compiler){
+    static_current_compiler = compiler;
+}
+
+void *compiler_storage_malloc(size_t size){
+    void *p;
+    Compiler *compiler;
+
+    compiler = get_current_compiler();
+    p = storage_malloc(compiler -> compile_storage, size);
+
+    return p;
+}
+
+Compiler *create_compiler(){
+    Storage storage;
+    Compiler *compiler;
+    
+    storage = open_storage(0);
+    compiler = storage_malloc(storage, sizeof(struct Compiler));
+    compiler -> compile_storage = storage;
+    compiler -> main_statement = NULL;
+    compiler -> current_line_number = 1;
+    set_current_compiler(compiler);
+    return compiler;
+}
+
+void dispose_compiler(Compiler *compiler){
+    free(compiler -> main_statement);
+    dispose_storage(compiler -> compile_storage);
 }
