@@ -24,26 +24,26 @@ y.tab.c:1470: warning: implicit declaration of function ‘yyerror’
 
 ###中身###
 + `Makefile` :  
-makeでコンパイル、make helpでその他の使い方の確認ができる。
-+ desk.h :  
+`make`でコンパイル、`make help`でその他の使い方の確認ができる。
++ `desk.h` :  
 列挙型定数、構造体、関数プロトタイプの宣言ファイル  
-+ desk.l :  
++ `desk.l` :  
 一応型や識別子も解析するlexファイル  
-+ desk.y :  
++ `desk.y` :  
 mainとその右辺の定数式のみ解析できるyaccファイル  
-+ compiler.c :  
++ `compiler.c` :  
 コンパイラ関係の関数実装、静的なコンパイラ型変数の宣言ファイル
-+ create.c :  
++ `create.c` :  
 構文解析中に使用する構文に対応したオブジェクトを生成する関数の実装ファイル  
-+ storage.h :  
++ `storage.h` :  
 メモリ管理のための構造体、関数プロトタイプの宣言ファイル
-+ storage.c :  
++ `storage.c` :  
 メモリ管理のための関数実装ファイル
-+ test.desk :  
++ `test.desk` :  
 最終的にコンパイルしたいファイルの簡単なもの(四則演算のみ)  
-+ test2.desk :  
++ `test2.desk` :  
 最終的にコンパイルしたいファイルの簡単なもの(関数呼び出しあり)  
-+ test3.desk :  
++ `test3.desk` :  
 最終的にコンパイルしたいエラトステネスの篩プログラム  
 
 ###参考###
