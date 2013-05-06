@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -O2 -g
+CFLAGS = -Wall -O2
 
 TARGET = desk
 OBJS = lex.yy.o y.tab.o main.o compiler.o create.o storage.o
@@ -26,3 +26,11 @@ lex.yy.c: $(LEX) y.tab.h
 
 y.tab.c y.tab.h: $(YACC)
 	yacc -d $<
+
+help:
+	@echo "USAGE: make [options]"
+	@echo "OPTIONS:"
+	@echo "  all    compile all files and generate run file."
+	@echo "  clean  remove all .o files generated."
+	@echo "  clear  remove all generated files."
+

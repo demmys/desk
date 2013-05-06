@@ -5,7 +5,7 @@ void main_define(Statement *statement){
 
     compiler = get_current_compiler();
     if(compiler -> main_statement){
-        compile_error();
+        compile_error("function main is already defined");
     } else{
         compiler -> main_statement = statement;
     }

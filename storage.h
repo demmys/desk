@@ -5,6 +5,7 @@
 #define DEFAULT_PAGE_SIZE 1024
 #define max(x, y) (((x) > (y)) ? (x) : (y))
 
+// set biggest type
 typedef union{
     long l_dummy;
     double d_dummy;

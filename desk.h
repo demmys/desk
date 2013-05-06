@@ -43,7 +43,7 @@ struct Compiler_tag{
     Storage *compile_storage;
     Statement *main_statement; // FunctionList *function_list;
     //int function_count;
-    //int current_line_number;
+    int current_line_number;
     //InputMode input_mode;
     //Encoding source_encoding;
 };
@@ -123,6 +123,6 @@ void set_current_compiler(Compiler *compiler);
 void *compiler_storage_malloc(size_t size);
 Compiler *create_compiler();
 void dispose_compiler(Compiler *compiler);
-void compile_error();
+void compile_error(char *message);
 
 #endif // DESK_H_INCLUDED

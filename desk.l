@@ -5,6 +5,11 @@
 int yywrap(void){
     return 1;
 }
+
+static void increment_line_number(){
+    get_current_compiler() -> current_line_number++;
+}
+
 %}
 %start L_COMMENT R_COMMENT
 %option nounput
@@ -69,21 +74,21 @@ int yywrap(void){
 }
 
 <INITIAL>[ \t] ;
-<INITIAL>\n /*increment_line_number()*/;
+<INITIAL>\n increment_line_number();
 
 <INITIAL>"/*" BEGIN R_COMMENT;
 <R_COMMENT>. ;
-<R_COMMENT>\n /*increment_line_number()*/;
+<R_COMMENT>\n increment_line_number();
 <R_COMMENT>"*/" BEGIN INITIAL;
 
 <INITIAL>"//" BEGIN L_COMMENT;
 <L_COMMENT>. ;
 <L_COMMENT>\n {
-    //increment_line_number();
+    increment_line_number();
     BEGIN INITIAL;
 }
 
 <INITIAL>. {
-    compile_error();
+    compile_error("lexical analyze");
 }
 %%

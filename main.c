@@ -21,10 +21,8 @@ int main(int argc, char *argv[]){
 
     compiler = create_compiler();
     if(yyparse()){
-        fprintf(stderr, "Error!\n");
-        exit(1);
+        compile_error("yyparse");
     }
-    //fix_tree(compiler);
     //generate(compiler);
     dispose_compiler(compiler);
 
@@ -32,7 +30,7 @@ int main(int argc, char *argv[]){
 }
 
 int yyerror(char const *str){
-    compile_error();
+    compile_error("yyerror");
 
     return 0;
 }

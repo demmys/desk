@@ -28,7 +28,7 @@ Compiler *create_compiler(){
     compiler = storage_malloc(storage, sizeof(Compiler));
     compiler -> compile_storage = storage;
     compiler -> main_statement = NULL;
-    //compiler -> current_line_number = 1;
+    compiler -> current_line_number = 1;
     set_current_compiler(compiler);
     return compiler;
 }
@@ -37,7 +37,7 @@ void dispose_compiler(Compiler *compiler){
     dispose_storage(compiler -> compile_storage);
 }
 
-void compile_error(){
-    fprintf(stderr, "compile error!");
+void compile_error(char *message){
+    fprintf(stderr, "compile error!\n%s\n", message);
     exit(1);
 }
