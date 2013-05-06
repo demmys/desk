@@ -9,7 +9,6 @@ int yywrap(void){
 static void increment_line_number(){
     get_current_compiler() -> current_line_number++;
 }
-
 %}
 %start L_COMMENT R_COMMENT
 %option nounput

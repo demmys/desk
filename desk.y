@@ -1,6 +1,9 @@
 %{
 #include "desk.h"
 #define YYDEBUG 1
+
+extern int yylex(void);
+extern int yyerror(char const *str);
 %}
 %union{
     char *identifier;
