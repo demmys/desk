@@ -8,15 +8,6 @@ Turing完全な純粋関数型言語
 ###現在の状況###
 正しいファイルはそのまま何も起こらず、間違ったファイルだとコンパイルエラーだといって終了するオートマトンみたいなものができた。
 
-###困っていること###
-コンパイル時に発生する警告  
-```
-y.tab.c: In function ‘yyparse’:
-y.tab.c:1289: warning: implicit declaration of function ‘yylex’
-y.tab.c:1470: warning: implicit declaration of function ‘yyerror’
-```
-の解決方法がわからない。
-
 ###次にやること###
 + 行番号を数えて、しっかりとコンパイルエラーを出す
 + 定数間の演算も強い型付にする
