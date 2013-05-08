@@ -31,6 +31,5 @@ int main(int argc, char *argv[]){
 
 int yyerror(char const *str){
     compile_error("yyerror");
-
     return 0;
 }
