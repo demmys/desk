@@ -56,7 +56,7 @@ typedef struct {
 struct Expression_tag{
     BasicType type; // TypeSpecifier *type;
     ExpressionKind kind;
-    //int line_number;
+    int line_number;
     union{
         int int_value;
         double float_value;
@@ -68,7 +68,7 @@ struct Expression_tag{
 
 struct Statement_tag{
     StatementType type;
-    //int line_number;
+    int line_number;
     union{
         Expression *expression_s;
     } u;
@@ -123,6 +123,6 @@ void set_current_compiler(Compiler *compiler);
 void *compiler_storage_malloc(size_t size);
 Compiler *create_compiler();
 void dispose_compiler(Compiler *compiler);
-void compile_error(char *message);
+void compile_error(int line_number, char *message);
 
 #endif // DESK_H_INCLUDED

@@ -88,6 +88,6 @@ static void increment_line_number(){
 }
 
 <INITIAL>. {
-    compile_error("lexical analyze");
+    compile_error(get_current_compiler() -> current_line_number, "lexical analyze error");
 }
 %%

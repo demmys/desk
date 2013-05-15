@@ -37,7 +37,7 @@ void dispose_compiler(Compiler *compiler){
     dispose_storage(compiler -> compile_storage);
 }
 
-void compile_error(char *message){
-    fprintf(stderr, "compile error!\n%s\n", message);
+void compile_error(int line_number, char *message){
+    fprintf(stderr, "compile error!\n%d: %s\n", line_number, message);
     exit(1);
 }

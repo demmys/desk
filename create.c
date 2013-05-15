@@ -5,7 +5,7 @@ void main_define(Statement *statement){
 
     compiler = get_current_compiler();
     if(compiler -> main_statement){
-        compile_error("function main is already defined");
+        compile_error(statement -> line_number, "function main is already defined");
     } else{
         compiler -> main_statement = statement;
     }
@@ -45,8 +45,7 @@ Expression* alloc_expression(ExpressionKind kind){
     exp = compiler_storage_malloc(sizeof(Expression));
     exp -> type = 0;
     exp -> kind = kind;
-    //exp -> line_number = get_current_compiler() -> current_line_number;
-    //
+    exp -> line_number = get_current_compiler() -> current_line_number;
     return exp;
 }
 
@@ -55,7 +54,7 @@ Statement* alloc_statement(StatementType type){
 
     st = compiler_storage_malloc(sizeof(Statement));
     st -> type = type;
-    //st -> line_number = get_current_compiler() -> current_line_number;
+    st -> line_number = get_current_compiler() -> current_line_number;
     
     return st;
 }
