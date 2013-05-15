@@ -21,7 +21,7 @@ int main(int argc, char *argv[]){
 
     compiler = create_compiler();
     if(yyparse()){
-        compile_error("yyparse");
+        compile_error(get_current_compiler() -> current_line_number, "parse error");
     }
     //generate(compiler);
     dispose_compiler(compiler);
@@ -30,6 +30,5 @@ int main(int argc, char *argv[]){
 }
 
 int yyerror(char const *str){
-    compile_error("yyerror");
     return 0;
 }
