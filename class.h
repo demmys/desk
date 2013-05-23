@@ -1,8 +1,12 @@
 #ifndef CLASS_H_INCLUDED
 #define CLASS_H_INCLUDED
 typedef unsigned char u1;
+/*
+typedef unsigned char u2[2];
+typedef unsigned char u4[4];
+*/
 typedef unsigned short u2;
-typedef unsigned long u4;
+typedef unsigned int u4;
 
 /*
  * constants

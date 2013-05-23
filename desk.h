@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "storage.h"
+#include "class.h"
 
 /*
  * enumerated type
@@ -129,5 +130,7 @@ void compile_error(int line_number, char *message);
  * generate.c function prototype
  */
 void generate(char *file_name, Compiler *compiler);
+ClassFile *make_class_file(Compiler *compiler);
+void write_class_file(ClassFile *cf, FILE *fp);
 
 #endif // DESK_H_INCLUDED
