@@ -125,4 +125,9 @@ Compiler *create_compiler();
 void dispose_compiler(Compiler *compiler);
 void compile_error(int line_number, char *message);
 
+/*
+ * generate.c function prototype
+ */
+void generate(char *file_name, Compiler *compiler);
+
 #endif // DESK_H_INCLUDED

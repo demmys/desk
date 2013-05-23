@@ -23,7 +23,7 @@ int main(int argc, char *argv[]){
     if(yyparse()){
         compile_error(get_current_compiler() -> current_line_number, "parse error");
     }
-    //generate(compiler);
+    generate(argv[1], compiler);
     dispose_compiler(compiler);
 
     return 0;
