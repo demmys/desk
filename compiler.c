@@ -23,7 +23,7 @@ void *compiler_storage_malloc(size_t size){
 Compiler *create_compiler(){
     Storage *storage;
     Compiler *compiler;
-    
+
     storage = open_storage(0);
     compiler = storage_malloc(storage, sizeof(Compiler));
     compiler -> compile_storage = storage;
