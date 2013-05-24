@@ -1,5 +1,4 @@
-#include <string.h>
-#include "desk.h"
+#include "generate.h"
 
 //static ClassFile *static_current_class_file;
 
@@ -37,24 +36,41 @@ void swap32(u4 *value){
 }
 
 void write_class_file(ClassFile *cf, FILE *fp){
-    swap32(&(cf -> magic));
-    swap16(&(cf -> minor_version));
-    swap16(&(cf -> major_version));
-    swap16(&(cf -> constant_pool_count));
+    swap32(&(cf->magic));
+    swap16(&(cf->minor_version));
+    swap16(&(cf->major_version));
+    swap16(&(cf->constant_pool_count));
 
     fwrite(cf, sizeof(unsigned char), 10, fp);
 }
 
 ClassFile *make_class_file(Compiler *compiler){
     ClassFile *cf;
+    cf = storage_malloc(compiler->compile_storage, sizeof(ClassFile));
 
-    cf = storage_malloc(compiler -> compile_storage, sizeof(ClassFile));
-
-    cf -> magic = 0xcafebabe;
-    cf -> minor_version = 0x0000;
-    cf -> major_version = 0x0032;
-    cf -> constant_pool_count = 0x000d;
-    cf -> constant_pool = storage_malloc(compiler -> compile_storage, sizeof(ConstantPoolInfo) * cf -> constant_pool_count);
+    cf->magic = 0xcafebabe;
+    cf->minor_version = 0;
+    cf->major_version = 50;
+    cf->constant_pool_count = 13;
+    //constant pool
+    cf->constant_pool = storage_malloc(compiler->compile_storage, sizeof(ConstantPoolInfo) * cf->constant_pool_count);
+    cf->access_flags = ACC_PUBLIC | ACC_SUPER;
+    cf->this_class = 2;
+    cf->super_class = 3;
+    cf->interfaces_count = 0;
+    cf->fields_count = 0;
+    cf->methods_count = 1;
+    //mehods
 
     return cf;
 }
+
+/*
+void set_attribute(ClassFile *cf, ){
+    cf->attribute_count = 1;
+    cf->attributes = storage_malloc(compiler->compile_storage, sizeof(AttributeInfo) * cf->attribute_count);
+    cf->attributes[0].attribute_name_index = 8;
+    cf->attributes[0].attribute_length = 2;
+    cf->attributes[0].u.cp_index
+}
+*/

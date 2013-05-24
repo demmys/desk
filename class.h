@@ -141,7 +141,7 @@ struct AttributeInfo_tag{
 
 // DefinitionInfo
 typedef struct{
-    AccessFlag access_flags;
+    u2 access_flags;
     u2 name_index;
     u2 descriptor_index;
     u2 attribute_count;
@@ -154,7 +154,7 @@ typedef struct{
     u2 major_version;
     u2 constant_pool_count;
     ConstantPoolInfo *constant_pool;//[constant_pool_count - 1]
-    AccessFlag access_flags;
+    u2 access_flags;
     u2 this_class;
     u2 super_class;
     u2 interfaces_count;
