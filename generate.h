@@ -73,20 +73,20 @@ typedef struct{
 
 typedef struct{
     u2 length;
-    u1 *bytes;
+    char *bytes;
 } Utf8Info;
 
 typedef struct{
     ConstantPoolTag tag;
     union{
         u2 cp_index;
-        ReferenceInfo reference_info;
+        ReferenceInfo *reference_info;
         u4 bytes;
-        LongBytes long_bytes;
-        NameAndTypeInfo name_and_type_info;
-        Utf8Info utf8_info;
+        LongBytes *long_bytes;
+        NameAndTypeInfo *name_and_type_info;
+        Utf8Info *utf8_info;
     } u;
-} ConstantPoolInfo;
+} ConstantPool;
 
 // attribute
 typedef struct Attribute_tag Attribute;
@@ -159,7 +159,7 @@ typedef struct{
     u2 minor_version;
     u2 major_version;
     u2 constant_pool_count;
-    ConstantPoolInfo *constant_pool;//[constant_pool_count - 1]
+    ConstantPool *constant_pool;//[constant_pool_count - 1]
     u2 access_flags;
     u2 this_class;
     u2 super_class;
@@ -177,8 +177,9 @@ typedef struct{
  * function prototype
  */
 void generate(char *file_name, Compiler *compiler);
-ClassFile *create_class_file(Compiler *compiler);
+ClassFile *create_class_file(Compiler *compiler, char *file_name);
 void write_class_file(ClassFile *cf, FILE *fp);
+ConstantPool *create_constant_pool(Storage *storage, char* file_name, int count, ConstantPoolTag *tags);
 Definition *create_methods(Storage *storage, int count);
 Attribute *create_attributes(Storage *storage, int count, AttributeTag *tags);
 
