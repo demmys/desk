@@ -2,6 +2,7 @@
 #define DESK_H_INCLUDED
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "storage.h"
 
 /*
@@ -31,21 +32,70 @@ typedef enum{
     STATEMENT_TYPE_COUNT_PLUS_1
 } StatementType;
 
+typedef enum{
+    CONSTANT_Class = 7,
+    CONSTANT_Fieldref = 9,
+    CONSTANT_Methodref = 10,
+    CONSTANT_InterfaceMethodref = 11,
+    CONSTANT_String = 8,
+    CONSTANT_Integer = 3,
+    CONSTANT_Float = 4,
+    CONSTANT_Long = 5,
+    CONSTANT_Double = 6,
+    CONSTANT_NameAndType = 12,
+    CONSTANT_Utf8 = 1
+} ConstantInfoTag;
+
 /*
  * struct declaration
  */
+typedef unsigned char u1;
+typedef unsigned short u2;
+typedef unsigned int u4;
 typedef struct Compiler_tag Compiler;
+typedef struct ConstantInfo_tag ConstantInfo;
 typedef struct Expression_tag Expression;
-//typedef struct BinaryExpression_tag BinaryExpression;
 typedef struct Statement_tag Statement;
 
 struct Compiler_tag{
     Storage *compile_storage;
-    Statement *main_statement; // FunctionList *function_list;
+    int constant_pool_count;
+    ConstantInfo *constant_pool;
     //int function_count;
+    Statement *main_statement; // FunctionList *function_list;
     int current_line_number;
     //InputMode input_mode;
     //Encoding source_encoding;
+};
+
+// Constant pool
+typedef struct{
+    u2 class_index;
+    u2 name_and_type_index;
+} ReferenceInfo;
+typedef struct{
+    u4 high_bytes;
+    u4 low_bytes;
+} LongBytes;
+typedef struct{
+    u2 name_index;
+    u2 descriptor_index;
+} NameAndTypeInfo;
+typedef struct{
+    u2 length;
+    char *value;
+} Utf8Info;
+struct ConstantInfo_tag{
+    ConstantInfoTag tag;
+    union{
+        u2 cp_index;
+        ReferenceInfo reference_info;
+        u4 bytes;
+        LongBytes long_bytes;
+        NameAndTypeInfo name_and_type_info;
+        Utf8Info utf8_info;
+    } u;
+    ConstantInfo *next;
 };
 
 typedef struct {
@@ -109,20 +159,24 @@ typedef struct ParameterList_tag{
  * create.c function prototype
  */
 void main_define(Statement *statement);
+ConstantInfo *add_constant_info(ConstantInfoTag tag);
+int add_utf8(char *value);
+void add_class(char *class_name);
+void add_name_and_type(char *name, char *type);
 Statement *create_expression_statement(Expression *expression);
 Expression *create_binary_expression(ExpressionKind operator, Expression *left, Expression *right);
 Expression *create_minus_expression(Expression *operand);
 Expression* alloc_expression(ExpressionKind kind);
-Statement* alloc_statement(StatementType type);
 
 /*
  * compiler.c function prototype
  */
 Compiler *get_current_compiler();
 void set_current_compiler(Compiler *compiler);
+void compile_error(int line_number, char *message);
 void *compiler_storage_malloc(size_t size);
+ConstantInfo *get_constant_info(int index);
 Compiler *create_compiler();
 void dispose_compiler(Compiler *compiler);
-void compile_error(int line_number, char *message);
 
 #endif // DESK_H_INCLUDED

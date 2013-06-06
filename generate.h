@@ -3,9 +3,11 @@
 #include <string.h>
 #include "desk.h"
 
+/* copied to desk.h
 typedef unsigned char u1;
 typedef unsigned short u2;
 typedef unsigned int u4;
+*/
 
 /*
  * constants
@@ -25,6 +27,7 @@ typedef enum{
 } AccessFlag; // u2
 
 // constant pool tags
+/* copied to desk.h
 typedef enum{
     CONSTANT_Class = 7,
     CONSTANT_Fieldref = 9,
@@ -38,6 +41,7 @@ typedef enum{
     CONSTANT_NameAndType = 12,
     CONSTANT_Utf8 = 1
 } ConstantPoolTag;
+*/
 
 // attribute tags
 typedef enum{
@@ -56,6 +60,7 @@ typedef enum{
  * structs
  */
 //constant pool
+/* copied to desk.h
 typedef struct{
     u2 class_index;
     u2 name_and_type_index;
@@ -87,6 +92,7 @@ typedef struct{
         Utf8Info *utf8_info;
     } u;
 } ConstantPool;
+*/
 
 // attribute
 typedef struct Attribute_tag Attribute;

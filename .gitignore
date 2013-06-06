@@ -1,8 +1,9 @@
-.*.swp
-sample/*
 desk
 lex.yy.c
 y.tab.c
 y.tab.h
 *.o
 *.class
+sample/*
+java_test/*
+.*.swp

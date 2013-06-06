@@ -1,5 +1,4 @@
 #include "desk.h"
-#include "generate.h"
 #include "y.tab.h"
 
 #define INPUT_EXTENSION ".desk"
