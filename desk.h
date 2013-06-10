@@ -56,11 +56,15 @@ typedef struct Compiler_tag Compiler;
 typedef struct ConstantInfo_tag ConstantInfo;
 typedef struct Expression_tag Expression;
 typedef struct Statement_tag Statement;
+typedef struct AttributeInfo_tag AttributeInfo;
 
 struct Compiler_tag{
     Storage *compile_storage;
     int constant_pool_count;
     ConstantInfo *constant_pool;
+    int this_class_index;
+    int super_class_index;
+    AttributeInfo *source_file;
     //int function_count;
     Statement *main_statement; // FunctionList *function_list;
     int current_line_number;
@@ -98,6 +102,42 @@ struct ConstantInfo_tag{
     ConstantInfo *next;
 };
 
+// attributes
+typedef struct{
+    u2 start_pc;
+    u2 line_number;
+} LineNumber;
+typedef struct{
+    u2 line_number_table_length;
+    LineNumber *line_number_table; //[line_number_table_length]
+} LineNumberTableAttribute;
+typedef struct{
+    u2 start_pc;
+    u2 end_pc;
+    u2 handler_pc;
+    u2 catch_type;
+} Exception;
+typedef struct{
+    u2 max_stack;
+    u2 max_locals;
+    u4 code_length;
+    u1 *code;
+    u2 exception_table_length;
+    Exception *exception_table; //[exception_table_length]
+    u2 attributes_count;
+    AttributeInfo *attributes; //[attributes_count]
+} CodeAttribute;
+struct AttributeInfo_tag{
+    u2 attribute_name_index;
+    u4 attribute_length;
+    union{
+        u2 cp_index; // SourceFile
+        CodeAttribute code_attribute; // Code
+        LineNumberTableAttribute line_number_table_attribute; // LineNumberTable
+    } u;
+};
+
+// expressions
 typedef struct {
     Expression  *left;
     Expression  *right;
@@ -159,10 +199,14 @@ typedef struct ParameterList_tag{
  * create.c function prototype
  */
 void main_define(Statement *statement);
+void compile_info_define(char *this_class, char *super_class, char *source_file);
 ConstantInfo *add_constant_info(ConstantInfoTag tag);
+AttributeInfo *alloc_attribute_info();
 int add_utf8(char *value);
-void add_class(char *class_name);
-void add_name_and_type(char *name, char *type);
+int add_class(char *class_name);
+int add_name_and_type(char *name, char *type);
+int add_methodref(char *class, char *name, char *type);
+AttributeInfo *set_source_file_attribute(char *source_file);
 Statement *create_expression_statement(Expression *expression);
 Expression *create_binary_expression(ExpressionKind operator, Expression *left, Expression *right);
 Expression *create_minus_expression(Expression *operand);

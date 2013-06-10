@@ -11,9 +11,14 @@ ConstantInfo *alloc_constant_info(ConstantInfoTag tag){
     ci->next = NULL;
     return ci;
 }
+AttributeInfo *alloc_attribute_info(){
+    AttributeInfo *ai;
+    ai = compiler_storage_malloc(sizeof(AttributeInfo));
+    return ai;
+}
 Expression* alloc_expression(ExpressionKind kind){
     Expression *exp;
-
+ 
     exp = compiler_storage_malloc(sizeof(Expression));
     exp->type = 0;
     exp->kind = kind;
@@ -34,22 +39,25 @@ Statement* alloc_statement(StatementType type){
  */
 void main_define(Statement *statement){
     Compiler *compiler;
-    ConstantInfo *ci;
 
     compiler = get_current_compiler();
     if(compiler->main_statement){
         compile_error(statement->line_number, "function main is already defined");
     } else{
         compiler->main_statement = statement;
-        
-        ci = add_constant_info(CONSTANT_Utf8);
-        ci->u.utf8_info.length = 4;
-        ci->u.utf8_info.value = "main";
 
-        ci = add_constant_info(CONSTANT_Utf8);
-        ci->u.utf8_info.length = 22;
-        ci->u.utf8_info.value = "([Ljava/lang/String;)V";
+        //TODO structure statement must be the same structure of structure Definition
+        add_utf8("main");
+        add_utf8("([Ljava/lang/String;)V");
     }
+}
+
+void compile_info_define(char *this_class, char *super_class, char *source_file){
+    Compiler *compiler;
+    compiler = get_current_compiler();
+    compiler->this_class_index = add_class(this_class);
+    compiler->super_class_index = add_class(super_class);
+    compiler->source_file = set_source_file_attribute(source_file);
 }
 
 ConstantInfo *add_constant_info(ConstantInfoTag tag){
@@ -83,30 +91,56 @@ int add_utf8(char *value){
     ci = add_constant_info(CONSTANT_Utf8);
     ci->u.utf8_info.length = strlen(value);
     ci->u.utf8_info.value = value;
-    return 0;
+    return get_current_compiler()->constant_pool_count;
 }
 
-void add_class(char *class_name){
+int add_class(char *class_name){
+    Compiler *compiler;
+    ConstantInfo *ci;
+    int utf8_index, i;
+
+    compiler = get_current_compiler();
+    if((utf8_index = add_utf8(class_name)) != compiler->constant_pool_count){
+        for(ci = compiler->constant_pool, i = 1; ci; ci = ci->next, i++){
+            if(ci->tag == CONSTANT_Class && ci->u.cp_index == utf8_index)
+                return i;
+        }
+    }
+    ci = add_constant_info(CONSTANT_Class);
+    ci->u.cp_index = utf8_index;
+    return compiler->constant_pool_count;
+}
+
+int add_name_and_type(char *name, char *type){
     ConstantInfo *ci;
     int index;
 
-    if(!(index = add_utf8(class_name)))
-        index = get_current_compiler()->constant_pool_count;
-    ci = add_constant_info(CONSTANT_Class);
-    ci->u.cp_index = index;
+    ci = add_constant_info(CONSTANT_NameAndType);
+    index = get_current_compiler()->constant_pool_count;
+    ci->u.name_and_type_info.name_index = add_utf8(name);
+    ci->u.name_and_type_info.descriptor_index = add_utf8(type);
+    return index;
 }
 
-void add_name_and_type(char *name, char *type){
+int add_methodref(char *class, char *name, char *type){
     ConstantInfo *ci;
-    int name_index, type_index;
+    int index;
 
-    if(!(name_index = add_utf8(name)))
-        name_index = get_current_compiler()->constant_pool_count;
-    if(!(type_index = add_utf8(type)))
-        type_index = name_index + 1;
-    ci = add_constant_info(CONSTANT_NameAndType);
-    ci->u.name_and_type_info.name_index = name_index;
-    ci->u.name_and_type_info.descriptor_index = type_index;
+    ci = add_constant_info(CONSTANT_Methodref);
+    index = get_current_compiler()->constant_pool_count;
+    ci->u.reference_info.class_index = add_class(class);
+    ci->u.reference_info.name_and_type_index = add_name_and_type(name, type);
+    return index;
+}
+
+AttributeInfo *set_source_file_attribute(char *source_file){
+    AttributeInfo *ai;
+
+    ai = alloc_attribute_info();
+    ai->attribute_name_index = add_utf8("SourceFile");
+    ai->attribute_length = 2;
+    ai->u.cp_index = add_utf8(source_file);
+    return ai;
 }
 
 /*

@@ -95,7 +95,7 @@ typedef struct{
 */
 
 // attribute
-typedef struct Attribute_tag Attribute;
+//typedef struct Attribute_tag Attribute;
 
 /*
 typedef struct{
@@ -112,6 +112,7 @@ typedef struct{
 } LocalVariableTabelAttribute;
 */
 
+/* copied to desk.h
 typedef struct{
     u2 start_pc;
     u2 line_number;
@@ -121,7 +122,9 @@ typedef struct{
     u2 line_number_table_length;
     LineNumber *line_number_table; //[line_number_table_length]
 } LineNumberTableAttribute;
+*/
 
+/* copied to desk.h
 typedef struct{
     u2 start_pc;
     u2 end_pc;
@@ -149,6 +152,7 @@ struct Attribute_tag{
         LineNumberTableAttribute line_number_table_attribute; // LineNumberTable
     } u;
 };
+*/
 
 // method, field
 typedef struct{
@@ -161,22 +165,22 @@ typedef struct{
 
 // class file
 typedef struct{
-    u4 magic;
-    u2 minor_version;
-    u2 major_version;
+    u4 magic; // fixed => generate
+    u2 minor_version; // fixed => generate
+    u2 major_version; // fixed => generate
     u2 constant_pool_count;
     ConstantPool *constant_pool;//[constant_pool_count - 1]
-    u2 access_flags;
-    u2 this_class;
-    u2 super_class;
-    u2 interfaces_count;
+    u2 access_flags; // fixed => generate
+    u2 this_class; // fixing => init
+    u2 super_class; // fixed => init
+    u2 interfaces_count; // fixed => generate
     u2 *interfaces;//[interfaces_count]
-    u2 fields_count;
+    u2 fields_count; // fixed => generate
     Definition *fields;//[fields_count]
-    u2 methods_count;
+    u2 methods_count;// fixed => generate
     Definition *methods;//[methods_count]
-    u2 attributes_count;
-    Attribute *attributes;//[attributes_count]
+    u2 attributes_count; // fixed => generate
+    Attribute *attributes;//[attributes_count] fixed => init
 } ClassFile;
 
 /*
