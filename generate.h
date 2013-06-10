@@ -3,9 +3,11 @@
 #include <string.h>
 #include "desk.h"
 
+/* copied to desk.h
 typedef unsigned char u1;
 typedef unsigned short u2;
 typedef unsigned int u4;
+*/
 
 /*
  * constants
@@ -25,6 +27,7 @@ typedef enum{
 } AccessFlag; // u2
 
 // constant pool tags
+/* copied to desk.h
 typedef enum{
     CONSTANT_Class = 7,
     CONSTANT_Fieldref = 9,
@@ -38,6 +41,7 @@ typedef enum{
     CONSTANT_NameAndType = 12,
     CONSTANT_Utf8 = 1
 } ConstantPoolTag;
+*/
 
 // attribute tags
 typedef enum{
@@ -56,6 +60,7 @@ typedef enum{
  * structs
  */
 //constant pool
+/* copied to desk.h
 typedef struct{
     u2 class_index;
     u2 name_and_type_index;
@@ -73,23 +78,24 @@ typedef struct{
 
 typedef struct{
     u2 length;
-    u1 *bytes;
+    char *bytes;
 } Utf8Info;
 
 typedef struct{
     ConstantPoolTag tag;
     union{
         u2 cp_index;
-        ReferenceInfo reference_info;
+        ReferenceInfo *reference_info;
         u4 bytes;
-        LongBytes long_bytes;
-        NameAndTypeInfo name_and_type_info;
-        Utf8Info utf8_info;
+        LongBytes *long_bytes;
+        NameAndTypeInfo *name_and_type_info;
+        Utf8Info *utf8_info;
     } u;
-} ConstantPoolInfo;
+} ConstantPool;
+*/
 
 // attribute
-typedef struct Attribute_tag Attribute;
+//typedef struct Attribute_tag Attribute;
 
 /*
 typedef struct{
@@ -106,6 +112,7 @@ typedef struct{
 } LocalVariableTabelAttribute;
 */
 
+/* copied to desk.h
 typedef struct{
     u2 start_pc;
     u2 line_number;
@@ -115,7 +122,9 @@ typedef struct{
     u2 line_number_table_length;
     LineNumber *line_number_table; //[line_number_table_length]
 } LineNumberTableAttribute;
+*/
 
+/* copied to desk.h
 typedef struct{
     u2 start_pc;
     u2 end_pc;
@@ -143,6 +152,7 @@ struct Attribute_tag{
         LineNumberTableAttribute line_number_table_attribute; // LineNumberTable
     } u;
 };
+*/
 
 // method, field
 typedef struct{
@@ -155,30 +165,31 @@ typedef struct{
 
 // class file
 typedef struct{
-    u4 magic;
-    u2 minor_version;
-    u2 major_version;
+    u4 magic; // fixed => generate
+    u2 minor_version; // fixed => generate
+    u2 major_version; // fixed => generate
     u2 constant_pool_count;
-    ConstantPoolInfo *constant_pool;//[constant_pool_count - 1]
-    u2 access_flags;
-    u2 this_class;
-    u2 super_class;
-    u2 interfaces_count;
+    ConstantPool *constant_pool;//[constant_pool_count - 1]
+    u2 access_flags; // fixed => generate
+    u2 this_class; // fixing => init
+    u2 super_class; // fixed => init
+    u2 interfaces_count; // fixed => generate
     u2 *interfaces;//[interfaces_count]
-    u2 fields_count;
+    u2 fields_count; // fixed => generate
     Definition *fields;//[fields_count]
-    u2 methods_count;
+    u2 methods_count;// fixed => generate
     Definition *methods;//[methods_count]
-    u2 attributes_count;
-    Attribute *attributes;//[attributes_count]
+    u2 attributes_count; // fixed => generate
+    Attribute *attributes;//[attributes_count] fixed => init
 } ClassFile;
 
 /*
  * function prototype
  */
 void generate(char *file_name, Compiler *compiler);
-ClassFile *create_class_file(Compiler *compiler);
+ClassFile *create_class_file(Compiler *compiler, char *file_name);
 void write_class_file(ClassFile *cf, FILE *fp);
+ConstantPool *create_constant_pool(Storage *storage, char* file_name, int count, ConstantPoolTag *tags);
 Definition *create_methods(Storage *storage, int count);
 Attribute *create_attributes(Storage *storage, int count, AttributeTag *tags);
 
