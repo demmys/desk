@@ -45,8 +45,6 @@ void main_define(Statement *statement){
         compile_error(statement->line_number, "function main is already defined");
     } else{
         compiler->main_statement = statement;
-
-        //TODO structure statement must be the same structure of structure Definition
         add_utf8("main");
         add_utf8("([Ljava/lang/String;)V");
     }

@@ -39,7 +39,7 @@ definition
 
 main_definition
     : MAIN BOUND statement {
-        main_define($3); //TODO ref: dkc_function_define
+        main_define($3);
     };
 
 /*

@@ -152,7 +152,7 @@ struct Expression_tag{
         double float_value;
         char char_value;
         BinaryExpression binary_expression;
-        struct Expression_tag *minus_expression;
+        Expression *minus_expression;
     } u;
 };
 

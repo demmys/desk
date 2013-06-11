@@ -55,15 +55,12 @@ void init_compiler(){
     Compiler *compiler;
 
     compiler = get_current_compiler();
-    // initialize constant_pool
     compiler->constant_pool_count = 0;
     compiler->constant_pool = NULL;
     //TODO set constructor in specific method(set constructor method method)
     add_utf8("Code");
     add_utf8("LineNumberTable");
     add_methodref("java/lang/Object", "<init>", "()V");
-
-    // initialize others
     compiler->main_statement = NULL;
     compiler->current_line_number = 1;
 }
