@@ -2,7 +2,7 @@ CC = gcc
 CFLAGS = -Wall -O2
 
 TARGET = desk
-OBJS = lex.yy.o y.tab.o main.o compiler.o create.o storage.o
+OBJS = lex.yy.o y.tab.o main.o storage.o compiler.o create.o classfile.o generate.o
 MADE = $(TARGET) lex.yy.c y.tab.h y.tab.c
 LEX = desk.l
 YACC = desk.y
