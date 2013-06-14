@@ -36,13 +36,13 @@ typedef struct Expression_tag Expression;
 typedef struct Statement_tag Statement;
 
 typedef struct{
-    Storage *compile_storage;
     //int function_count;
     Statement *main_statement; // FunctionList *function_list;
     int current_line_number;
     //InputMode input_mode;
     //Encoding source_encoding;
     char *source_file;
+    Storage *compile_storage;
 }Compiler;
 
 typedef struct {

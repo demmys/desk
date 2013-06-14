@@ -30,12 +30,16 @@ typedef struct ConstantInfo_tag ConstantInfo;
 typedef struct AttributeInfo_tag AttributeInfo;
 
 typedef struct{
-    Storage *classfile_storage;
-    int constant_pool_count;
+    u4 magic;
+    u2 minor_version;
+    u2 major_version;
+    u2 constant_pool_count;
     ConstantInfo *constant_pool;
-    int this_class_index;
-    int super_class_index;
+    u2 this_class_index;
+    u2 super_class_index;
     AttributeInfo *source_file;
+    char *emit_file;
+    Storage *classfile_storage;
 } ClassFile;
 
 // Constant pool

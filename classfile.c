@@ -18,12 +18,16 @@ ClassFile *create_class_file(){
 
     storage = open_storage(0);
     classfile = storage_malloc(storage, sizeof(ClassFile));
-    classfile->classfile_storage = storage;
+    classfile->magic = 0xcafebabe;
+    classfile->minor_version = 0;
+    classfile->major_version = 50;
     classfile ->constant_pool_count = 0;
     classfile->constant_pool = NULL;
     classfile->this_class_index = 0;
     classfile->super_class_index = 0;
     classfile->source_file = NULL;
+    classfile->emit_file = NULL;
+    classfile->classfile_storage = storage;
     static_current_classfile = classfile;
     return classfile;
 }

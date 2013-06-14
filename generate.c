@@ -31,19 +31,27 @@ static int format_name(char *file_name){
 
 static void init_class_file(char *source_file, char *super_class){
     ClassFile *classfile;
-    char *class_name;
+    char *class_name, *emit_name;
     int class_name_length, i;
 
     classfile = get_current_classfile();
     class_name_length = format_name(source_file);
     class_name = classfile_storage_malloc(sizeof(char *) * (class_name_length + 1));
+    emit_name = classfile_storage_malloc(sizeof(char *) * (class_name_length + OUTPUT_EXTENSION_LENGTH + 1));
     for(i = 0; i < class_name_length; i++){
         class_name[i] = source_file[i];
+        emit_name[i] = source_file[i];
     }
-    class_name[i] = '\0';
+    for(i = 0; i < OUTPUT_EXTENSION_LENGTH; i++){
+        emit_name[class_name_length + i] = OUTPUT_EXTENSION[i];
+    }
+    class_name[class_name_length] = '\0';
+    emit_name[class_name_length + i] = '\0';
+
     classfile->this_class_index = add_class(class_name);
     classfile->super_class_index = add_class(super_class);
     classfile->source_file = set_source_file_attribute(source_file);
+    classfile->emit_file = emit_name;
 }
 
 ClassFile *generate(Compiler *compiler){
@@ -64,7 +72,7 @@ ClassFile *generate(Compiler *compiler){
     return classfile;
 }
 
-ConstantInfo *get_constant_info(int index){
+ConstantInfo *get_constant_info(u2 index){
     ConstantInfo *ci;
     ClassFile *classfile;
     int i;
@@ -120,7 +128,7 @@ static ConstantInfo *add_constant_info(ConstantInfoTag tag){
     return ci;
 }
 
-int add_utf8(char *value){
+u2 add_utf8(char *value){
     ConstantInfo *ci;
     ClassFile *classfile;
     int i;
@@ -136,7 +144,7 @@ int add_utf8(char *value){
     return get_current_classfile()->constant_pool_count;
 }
 
-int add_class(char *class_name){
+u2 add_class(char *class_name){
     ClassFile *classfile;
     ConstantInfo *ci;
     int utf8_index, i;
@@ -153,7 +161,7 @@ int add_class(char *class_name){
     return classfile->constant_pool_count;
 }
 
-int add_name_and_type(char *name, char *type){
+u2 add_name_and_type(char *name, char *type){
     ConstantInfo *ci;
     int index;
 
@@ -164,7 +172,7 @@ int add_name_and_type(char *name, char *type){
     return index;
 }
 
-int add_methodref(char *class, char *name, char *type){
+u2 add_methodref(char *class, char *name, char *type){
     ConstantInfo *ci;
     int index;
 

@@ -1,4 +1,4 @@
-#include "generate.h"
+#include "emit.h"
 #include "y.tab.h"
 
 int main(int argc, char *argv[]){
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]){
     if(yyparse()){
         compile_error(get_current_compiler() -> current_line_number, "parse error");
     }
-    generate(compiler);
+    emit(generate(compiler));
     dispose_compiler(compiler);
 
     return 0;
