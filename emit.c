@@ -66,6 +66,39 @@ void emit_constant_pool(FILE *fp){
     }
 }
 
+void emit_middles(FILE *fp){
+    ClassFile *classfile;
+
+    classfile = get_current_classfile();
+    swap16(&(classfile->access_flags));
+    swap16(&(classfile->this_class_index));
+    swap16(&(classfile->super_class_index));
+    swap16(&(classfile->interfaces_count));
+    swap16(&(classfile->fields_count));
+    swap16(&(classfile->methods_count));
+
+    fwrite(&(classfile->access_flags), sizeof(u1), 12, fp);
+}
+
+// TODO
+void emit_attributes(FILE *fp){
+    ClassFile *classfile;
+    //AttributeInfo *ai;
+    //u2 count;
+
+    classfile = get_current_classfile();
+    //count = classfile->attributes_count;
+    swap16(&(classfile->attributes_count));
+    swap16(&(classfile->source_file->attribute_name_index));
+    swap32(&(classfile->source_file->attribute_length));
+    swap16(&(classfile->source_file->u.cp_index));
+
+    fwrite(&(classfile->attributes_count), sizeof(u1), 2, fp);
+    fwrite(&(classfile->source_file->attribute_name_index), sizeof(u1), 2, fp);
+    fwrite(&(classfile->source_file->attribute_length), sizeof(u1), 4, fp);
+    fwrite(&(classfile->source_file->u.cp_index), sizeof(u1), 2, fp);
+}
+
 void emit(){
     FILE *fp;
     ClassFile *classfile;
@@ -78,6 +111,8 @@ void emit(){
 
     emit_prefixes(fp);
     emit_constant_pool(fp);
+    emit_middles(fp);
+    emit_attributes(fp);
 
     fclose(fp);
     printf("generated %s\n", classfile->emit_file);

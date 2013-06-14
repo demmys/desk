@@ -26,21 +26,9 @@ typedef enum{
 /*
  * struct declaration
  */
+typedef struct ClassFile_tag ClassFile;
 typedef struct ConstantInfo_tag ConstantInfo;
 typedef struct AttributeInfo_tag AttributeInfo;
-
-typedef struct{
-    u4 magic;
-    u2 minor_version;
-    u2 major_version;
-    u2 constant_pool_count;
-    ConstantInfo *constant_pool;
-    u2 this_class_index;
-    u2 super_class_index;
-    AttributeInfo *source_file;
-    char *emit_file;
-    Storage *classfile_storage;
-} ClassFile;
 
 // Constant pool
 typedef struct{
@@ -105,6 +93,35 @@ struct AttributeInfo_tag{
         CodeAttribute code_attribute; // Code
         LineNumberTableAttribute line_number_table_attribute; // LineNumberTable
     } u;
+};
+
+typedef struct{
+    u2 access_flags;
+    u2 name_index;
+    u2 descriptor_index;
+    u2 attributes_count;
+    AttributeInfo *attributes;
+} Definition;
+
+struct ClassFile_tag{
+    u4 magic;
+    u2 minor_version;
+    u2 major_version;
+    u2 constant_pool_count;
+    ConstantInfo *constant_pool;
+    u2 access_flags;
+    u2 this_class_index;
+    u2 super_class_index;
+    u2 interfaces_count;
+    // Definition *interfaces;
+    u2 fields_count;
+    // Definition *fields;
+    u2 methods_count;
+    Definition *methods;
+    u2 attributes_count;
+    AttributeInfo *source_file;
+    char *emit_file;
+    Storage *classfile_storage;
 };
 
 /*

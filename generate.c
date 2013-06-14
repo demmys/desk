@@ -67,7 +67,7 @@ ClassFile *generate(Compiler *compiler){
     add_utf8("([Ljava/lang/String;)V");
 
     //TODO test
-    test_constant_pool();
+    //test_constant_pool();
 
     return classfile;
 }
