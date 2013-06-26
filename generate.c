@@ -100,26 +100,56 @@ static ConstantInfo *alloc_constant_info(ConstantInfoTag tag){
     ci->next = NULL;
     return ci;
 }
-static AttributeInfo *alloc_attribute_info(){
+
+static AttributeInfo *alloc_attribute_info(char *attribute_name){
     AttributeInfo *ai;
+
     ai = classfile_storage_malloc(sizeof(AttributeInfo));
+    ai->attribute_name_index = add_utf8(attribute_name);
+    ai->attribute_length = 0;
+    ai->next = NULL;
     return ai;
+}
+
+static CodeAttribute *alloc_code_attribute(){
+    CodeAttribute *ca;
+
+    ca = classfile_storage_malloc(sizeof(CodeAttribute));
+    ca->max_stack = 0;
+    ca->max_locals = 0;
+    ca->code_length = 0;
+    ca->exception_table_length = 0;
+    return ca;
+}
+
+static LineNumberTableAttribute *alloc_line_number_table_attribute(){
+    LineNumberTableAttribute *lnta;
+
+    lnta = classfile_storage_malloc(sizeof(LineNumberTableAttribute));
+    lnta->line_number_table_length = 0;
+    lnta->line_number_table = NULL;
+    return lnta;
+}
+
+static Definition *alloc_definition(){
+    Definition *def;
+
+    def = classfile_storage_malloc(sizeof(Definition));
+    def->access_flags = ACC_PUBLIC;
+    return def;
 }
 
 /*
  * define methods
  */
-
 static ConstantInfo *add_constant_info(ConstantInfoTag tag){
     ClassFile *classfile;
-    ConstantInfo *ci;
-    ConstantInfo *ci_tail;
+    ConstantInfo *ci, *ci_tail;
 
     classfile = get_current_classfile();
     ci = alloc_constant_info(tag);
     if(classfile->constant_pool){
-        ci_tail = classfile->constant_pool;
-        for(; ci_tail->next; ci_tail = ci_tail->next);
+        for(ci_tail = classfile->constant_pool; ci_tail->next; ci_tail = ci_tail->next);
         ci_tail->next = ci;
     } else{
         classfile->constant_pool = ci;
@@ -186,11 +216,67 @@ u2 add_methodref(char *class, char *name, char *type){
 AttributeInfo *set_source_file_attribute(char *source_file){
     AttributeInfo *ai;
 
-    ai = alloc_attribute_info();
-    ai->attribute_name_index = add_utf8("SourceFile");
+    ai = alloc_attribute_info("SourceFile");
     ai->attribute_length = 2;
     ai->u.cp_index = add_utf8(source_file);
     return ai;
+}
+
+AttributeInfo *add_attribute_info(AttributeInfo **attributes_pointer, u2 *attributes_count_pointer, char *attribute_name){
+    AttributeInfo *ai, *ai_tail;
+
+    ai = alloc_attribute_info(attribute_name);
+    if(*attributes_pointer){
+        for(ai_tail = *attributes_pointer; ai_tail->next; ai_tail = ai_tail->next);
+        ai_tail->next = ai;
+    } else{
+        *attributes_pointer = ai;
+    }
+    (*attributes_count_pointer)++;
+    return ai;
+}
+
+void add_line_number_table_attribute(CodeAttribute *ca, Statement *statement){
+    AttributeInfo *ai;
+    LineNumberTableAttribute *lnta;
+
+    lnta = alloc_line_number_table_attribute();
+    // TODO set lnta->line_number_table
+    // TODO set lnta->line_number_table_length
+
+    ai = add_attribute_info(&(ca->attributes), &(ca->attributes_count), "LineNumberTable");
+    ai->attribute_length += lnta->line_number_table_length * 2 + 2;
+    ai->u.line_number_table_attribute = *lnta;
+}
+
+void add_code_attribute(Definition *method, Statement *statement){
+    AttributeInfo *ai;
+    CodeAttribute *ca;
+
+    ca = alloc_code_attribute();
+    // code.c & code.h
+    // TODO set ca->code
+    // TODO set ca->colde_length
+    // TODO set ca->max_locals
+    // TODO set ca->max_stack
+    // TODO code.cでLineNumberTable作っちゃう。
+    add_line_number_table_attribute(ca, statement);
+
+    ai = add_attribute_info(&(method->attributes), &(method->attributes_count), "Code");
+    ai->u.code_attribute = *ca;
+    // TODO add child attribute length (maybe in child attribute maker function)
+    ai->attribute_length += 12 + ca->code_length;
+}
+
+Definition *set_constructor(){
+    Definition *def;
+    Statement *statement;
+
+    def = alloc_definition();
+    def->name_index = add_utf8("<init>");
+    def->descriptor_index = add_utf8("()V");
+    add_code_attribute(def, statement);
+    return def;
 }
 
 

@@ -23,7 +23,7 @@ ClassFile *create_class_file(){
     classfile->major_version = 50;
     classfile ->constant_pool_count = 0;
     classfile->constant_pool = NULL;
-    classfile->access_flags = 0x21;
+    classfile->access_flags = ACC_SUPER | ACC_PUBLIC;
     classfile->this_class_index = 0;
     classfile->super_class_index = 0;
     classfile->interfaces_count = 0;

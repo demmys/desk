@@ -23,6 +23,19 @@ typedef enum{
     CONSTANT_Utf8 = 1
 } ConstantInfoTag;
 
+typedef enum{
+    ACC_PUBLIC = 0x0001,
+    ACC_PRIVATE = 0x0002,
+    ACC_PROTECTED = 0x0004,
+    ACC_STATIC = 0x0008,
+    ACC_FINAL = 0x0010,
+    ACC_SUPER = 0x0020,
+    ACC_VOLATILE = 0x0040,
+    ACC_TRANSIENT = 0x0080,
+    ACC_INTERFACE = 0x0200,
+    ACC_ABSTRACT = 0x0400
+} AccessFlag; // u2
+
 /*
  * struct declaration
  */
@@ -69,19 +82,21 @@ typedef struct{
     u2 line_number_table_length;
     LineNumber *line_number_table; //[line_number_table_length]
 } LineNumberTableAttribute;
+/*
 typedef struct{
     u2 start_pc;
     u2 end_pc;
     u2 handler_pc;
     u2 catch_type;
 } Exception;
+*/
 typedef struct{
     u2 max_stack;
     u2 max_locals;
     u4 code_length;
     u1 *code;
     u2 exception_table_length;
-    Exception *exception_table; //[exception_table_length]
+    //Exception *exception_table; //[exception_table_length]
     u2 attributes_count;
     AttributeInfo *attributes; //[attributes_count]
 } CodeAttribute;
@@ -93,6 +108,7 @@ struct AttributeInfo_tag{
         CodeAttribute code_attribute; // Code
         LineNumberTableAttribute line_number_table_attribute; // LineNumberTable
     } u;
+    AttributeInfo *next;
 };
 
 typedef struct{
