@@ -24,6 +24,7 @@ int main(int argc, char *argv[]){
     }
     emit(generate(compiler));
     dispose_compiler(compiler);
+    dispose_classfile(classfile);
 
     return 0;
 }
