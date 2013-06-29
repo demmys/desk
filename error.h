@@ -1,5 +1,6 @@
 #ifndef ERROR_H_INCLUDED
 #define ERROR_H_INCLUDED
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -13,7 +14,11 @@ typedef enum{
 } CompileErrorType;
 
 typedef enum{
-    ERROR_CP_INDEX_TOO_LARGE = 1
-}
+    ERROR_CP_INDEX_TOO_LARGE = 1,
+    ERROR_UNKNOWN_CONSTANT_TAG
+} SystemErrorType;
+
+void system_error(SystemErrorType type, ...);
+void compile_error(CompileErrorType type, ...);
 
 #endif // ERROR_H_INCLUDED

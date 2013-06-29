@@ -1,5 +1,8 @@
 #ifndef CLASSFILE_BASE_H_INCLUDED
 #define CLASSFILE_BASE_H_INCLUDED
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
 
 typedef unsigned char u1;
 typedef unsigned short u2;

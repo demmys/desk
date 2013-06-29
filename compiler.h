@@ -76,7 +76,6 @@ struct Statement_tag{
  * compiler.c function prototype
  */
 Compiler *get_current_compiler();
-void compile_error(int line_number, char *message);
 void *compiler_storage_malloc(size_t size);
 Compiler *create_compiler(char *source_file);
 void dispose_compiler(Compiler *compiler);

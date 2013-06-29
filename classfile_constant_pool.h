@@ -1,6 +1,5 @@
 #ifndef CLASSFILE_CONSTANT_POOL_H_INCLUDED
 #define CLASSFILE_CONSTANT_POOL_H_INCLUDED
-#include <stdarg.h>
 #include "classfile_base.h"
 
 /*
@@ -57,5 +56,6 @@ typedef struct{
 u2 vsearch_constant_info(ConstantInfoTag tag, va_list args);
 u2 search_constant_info(ConstantInfoTag tag, ...);
 u2 add_constant_info(ConstantInfoTag tag, ...);
+void dispose_constant_pool(ConstantInfo *ci);
 
 #endif // CLASSFILE_CONSTANT_POOL_H_INCLUDED

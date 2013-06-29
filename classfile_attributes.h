@@ -31,8 +31,8 @@ typedef struct{
 } LocalVariable;
 typedef struct{
     u2 local_variable_table_length;
-    LocalVariable local_variable_table[];
-} LocalVariableTabelAttribute;
+    LocalVariable *local_variable_table;
+} LocalVariableTableAttribute;
 
 typedef struct{
     u2 start_pc;
@@ -40,7 +40,7 @@ typedef struct{
 } LineNumber;
 typedef struct{
     u2 line_number_table_length;
-    LineNumber line_number_table[];
+    LineNumber *line_number_table;
 } LineNumberTableAttribute;
 
 typedef struct{
@@ -51,7 +51,7 @@ typedef struct{
 } InnerClass;
 typedef struct{
     u2 number_of_classes;
-    InnerClass classes[];
+    InnerClass *classes;
 } InnerClassesAttribute;
 
 typedef struct{
@@ -67,9 +67,9 @@ typedef struct{
     u4 code_length;
     u1 *code;
     u2 exception_table_length;
-    Exception exception_table[];
+    ExceptionsAttribute *exception_table;
     u2 attributes_count;
-    AttributeInfo attributes[];
+    AttributeInfo *attributes;
 } CodeAttribute;
 
 struct AttributeInfo_tag{
@@ -83,13 +83,13 @@ struct AttributeInfo_tag{
         InnerClassesAttribute inner_classes_attribute;
         u1 dummy; // Deprecated, Synthetic
         LineNumberTableAttribute line_number_table_attribute;
-        LocalVariableTabelAttribute local_variable_table_attribute;
+        LocalVariableTableAttribute local_variable_table_attribute;
     } u;
 };
 
 /*
  * classfile.c function prototype
  */
-AttributeInfo *add_attribute_info(AttributeInfo *ais, int *count, AttributeTag tag, ...);
+AttributeInfo *add_attribute_info(AttributeInfo *ais, u2 *count, AttributeTag tag, ...);
 
 #endif // CLASSFILE_ATTRIBUTES_H_INCLUDED

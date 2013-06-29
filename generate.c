@@ -1,5 +1,7 @@
 #include "generate.h"
 
+extern char *attribute_name[];
+
 static int format_name(char *file_name){
     int classc = 0;
     char *i;
@@ -22,6 +24,7 @@ static int format_name(char *file_name){
         classc++;
     }
     compile_error(ERROR_UNSUPPORTED_FILE_EXTENSION);
+    return -1;
 }
 
 static void init_class_file(char *source_file, char *super_class){
@@ -43,8 +46,8 @@ static void init_class_file(char *source_file, char *super_class){
     class_name[class_name_length] = '\0';
     emit_name[class_name_length + i] = '\0';
 
-    cf->this_class_index = add_class(class_name);
-    cf->super_class_index = add_class(super_class);
+    cf->this_class_index = add_constant_info(CONSTANT_Class, class_name);
+    cf->super_class_index = add_constant_info(CONSTANT_Class, super_class);
     add_attribute_info(cf->source_file, &(cf->attributes_count), ATTRIBUTE_SourceFile, source_file);
     cf->emit_file = emit_name;
 }
@@ -288,7 +291,7 @@ Definition *set_constructor(){
 void test_constant_pool(){
     ClassFile *cf = get_current_classfile();
     ConstantInfo ci;
-    int i, tag, temp;
+    int i, temp;
 
     for(i = 0; i < cf->constant_pool_count; i++){
         printf("index: %d\n", i + 1);
@@ -320,40 +323,6 @@ void test_constant_pool(){
                 break;
             default:
                 printf("\ttag: %d\n", ci.tag);
-        }
-    }
-
-    for(i = cf.constant_pool_count; i > 0; i--){
-        printf("index: %d\n", i);
-        ci = get_constant_info(i);
-        tag = ci.tag;
-        switch(tag){
-            case CONSTANT_Utf8:
-                printf("\tUTF-8: %d, %s\n", ci.u.utf8_info.length, ci.u.utf8_info.value);
-                break;
-            case CONSTANT_Class:
-                temp = ci.u.cp_index;
-                printf("\tClass: %d // %s\n", temp, get_constant_info(temp).u.utf8_info.value);
-                break;
-            case CONSTANT_Methodref:
-                temp = ci.u.reference_info.class_index;
-                printf("\tMethod: %d // ", temp);
-                temp = get_constant_info(temp).u.cp_index;
-                printf("%s\n", get_constant_info(temp).u.utf8_info.value);
-                ci = get_constant_info(ci.u.reference_info.name_and_type_index);
-                temp = ci.u.name_and_type_info.name_index;
-                printf("\t\t %d // %s\n", temp, get_constant_info(temp).u.utf8_info.value);
-                temp = ci.u.name_and_type_info.descriptor_index;
-                printf("\t\t, %d // %s\n", temp, get_constant_info(temp).u.utf8_info.value);
-                break;
-            case CONSTANT_NameAndType:
-                temp = ci.u.name_and_type_info.name_index;
-                printf("\tNameAndType: %d // %s\n", temp, get_constant_info(temp).u.utf8_info.value);
-                temp = ci.u.name_and_type_info.descriptor_index;
-                printf("\t\t, %d // %s\n", temp, get_constant_info(temp).u.utf8_info.value);
-                break;
-            default:
-                printf("\ttag: %d\n", tag);
         }
     }
 }

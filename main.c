@@ -5,6 +5,7 @@ int main(int argc, char *argv[]){
     extern int yyparse(void);
     extern FILE *yyin;
     Compiler *compiler;
+    ClassFile *classfile;
     FILE *fp;
 
     // open file
@@ -19,7 +20,7 @@ int main(int argc, char *argv[]){
         compile_error(ERROR_PARSE, get_current_compiler()->current_line_number);
     }
     //emit(generate(compiler));
-    generate(compiler);
+    classfile = generate(compiler);
     dispose_compiler(compiler);
     dispose_classfile(classfile);
 

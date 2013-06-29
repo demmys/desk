@@ -1,5 +1,6 @@
 #ifndef CLASSFILE_H_INCLUDED
 #define CLASSFILE_H_INCLUDED
+#include "error.h"
 #include "classfile_constant_pool.h"
 #include "classfile_attributes.h"
 
@@ -27,7 +28,7 @@ typedef struct{
     u2 name_index;
     u2 descriptor_index;
     u2 attributes_count;
-    AttributeInfo attributes[];
+    AttributeInfo *attributes;
 } Definition;
 
 typedef struct {
@@ -35,18 +36,18 @@ typedef struct {
     u2 minor_version;
     u2 major_version;
     u2 constant_pool_count;
-    ConstantInfo constant_pool[];
+    ConstantInfo *constant_pool;
     u2 access_flags;
     u2 this_class_index;
     u2 super_class_index;
     u2 interfaces_count;
-    Definition interfaces[];
+    Definition *interfaces;
     u2 fields_count;
-    Definition fields[];
+    Definition *fields;
     u2 methods_count;
-    Definition methods[];
+    Definition *methods;
     u2 attributes_count;
-    AttributeInfo source_file[];
+    AttributeInfo *source_file;
     char *emit_file;
 } ClassFile;
 
