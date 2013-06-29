@@ -9,11 +9,6 @@ Compiler *get_current_compiler(){
 /*
  * Methods work with compiler
  */
-void compile_error(int line_number, char *message){
-    fprintf(stderr, "compile error!\n%d: %s\n", line_number, message);
-    exit(1);
-}
-
 void *compiler_storage_malloc(size_t size){
     void *p;
     p = storage_malloc(static_current_compiler->compile_storage, size);

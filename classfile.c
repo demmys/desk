@@ -30,6 +30,8 @@ ClassFile *create_class_file(){
 }
 
 void dispose_classfile(ClassFile *cf){
+    free(cf->constant_pool[cf->this_class_index - 1].u.value);
+    free(cf->emit_file);
     dispose_constant_pool(cf->constant_pool);
     // dispose_definition(cf->methods);
     // dispose_attributes(cf->source_file);

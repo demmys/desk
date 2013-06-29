@@ -1,12 +1,11 @@
 #include "classfile_constant_pool.h.h"
 
-u2 search_constant_info(ConstantInfoTag tag, ...){
+u2 vsearch_constant_info(ConstantInfoTag tag, va_list args){
     ClassFile *cf;
     ConstantInfo ci;
     u2 i;
 
     cf = get_current_classfile();
-    va_start(args, tag);
     for(i = 0; i < cf->constant_pool_count; i++){
         ci = cf->constant_pool[i];
         if(ci.tag == tag){
@@ -44,8 +43,14 @@ u2 search_constant_info(ConstantInfoTag tag, ...){
             }
         }
     }
-    va_end(args);
     return 0;
+}
+
+u2 search_constant_info(ConstantInfoTag tag, ...){
+    va_list args;
+    va_start(args, tag);
+    vsearch_constant_info(tag, args);
+    va_end(args);
 }
 
 u2 add_constant_info(ConstantInfoTag tag, ...){
@@ -53,11 +58,12 @@ u2 add_constant_info(ConstantInfoTag tag, ...){
     ConstantInfo *ci;
     va_list args;
     u2 index;
+    char *arg1, *arg2, *arg3;
 
     cf = get_current_classfile();
     va_start(args, tag);
     /* if adding constant exists, return the index */
-    index = search_constant_info(tag, args);
+    index = vsearch_constant_info(tag, args);
     if(index > 0)
         return index;
 
@@ -74,7 +80,8 @@ u2 add_constant_info(ConstantInfoTag tag, ...){
             break;
         case CONSTANT_Class:
         case CONSTANT_String:
-            ci->u.cp_index = va_arg(arg, u2);
+            arg1 = va_arg(arg, char *);
+            ci->u.cp_index = add_constant_info(CONSTANT_Utf8, arg1);
             break;
         case CONSTANT_Integer:
         case CONSTANT_Float:
@@ -88,12 +95,17 @@ u2 add_constant_info(ConstantInfoTag tag, ...){
         case CONSTANT_Fieldref:
         case CONSTANT_Methodref:
         case CONSTANT_InterfaceMethodref:
-            ci->u.reference_info.class_index = va_arg(arg, u2);
-            ci->u.reference_info.name_and_type_index = va_arg(arg, u2);
+            arg1 = va_arg(arg, char *);
+            arg2 = va_arg(arg, char *);
+            arg3 = va_arg(arg, char *);
+            ci->u.reference_info.class_index = add_constant_info(CONSTANT_Class, arg1);
+            ci->u.reference_info.name_and_type_index = add_constant_info(CONSTANT_NameAndType, arg2, arg3);
             break;
         case CONSTANT_NameAndType:
-            ci->u.name_and_type_info.name_index = va_arg(arg, u2);
-            ci->u.name_and_type_info.descriptor_index = va_arg(arg, u2);
+            arg1 = va_arg(arg, char *);
+            arg2 = va_arg(arg, char *);
+            ci->u.name_and_type_info.name_index = add_constant_info(CONSTANT_Utf8, arg1);
+            ci->u.name_and_type_info.descriptor_index = add_constant_info(CONSTANT_Utf8, arg2);
     }
     va_end(args);
     return cf->constant_pool_count;

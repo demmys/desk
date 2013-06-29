@@ -1,0 +1,19 @@
+#ifndef ERROR_H_INCLUDED
+#define ERROR_H_INCLUDED
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef enum{
+    ERROR_NO_INPUT_FILES = 1,
+    ERROR_NO_SUCH_FILE,
+    ERROR_UNSUPPORTED_FILE_NAME,
+    ERROR_UNSUPPORTED_FILE_EXTENSION,
+    ERROR_PARSE,
+    ERROR_MAIN_ALREADY_DEFINED
+} CompileErrorType;
+
+typedef enum{
+    ERROR_CP_INDEX_TOO_LARGE = 1
+}
+
+#endif // ERROR_H_INCLUDED

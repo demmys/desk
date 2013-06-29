@@ -1,6 +1,7 @@
 #ifndef COMPILE_H_INCLUDED
 #define COMPILE_H_INCLUDED
 #include "storage.h"
+#include "error.h"
 
 /*
  * enumerated type

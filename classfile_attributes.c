@@ -38,7 +38,8 @@ AttributeInfo *add_attribute_info(AttributeInfo *ais, int *count, AttributeTag t
     switch(tag){
         case ATTRIBUTE_ConstantValue:
         case ATTRIBUTE_SourceFile:
-            ai->u.cp_index = va_arg(arg, u2);
+            ai->u.cp_index = add_constant_info(CONSTANT_Utf8, va_arg(arg, char *));
+            ai->attribute_length = 2;
             break;
         case ATTRIBUTE_Code:
             ca = &(ai->u.code_attribute);

@@ -54,6 +54,7 @@ typedef struct{
 /*
  * classfile_constant_pool.c function prototype
  */
+u2 vsearch_constant_info(ConstantInfoTag tag, va_list args);
 u2 search_constant_info(ConstantInfoTag tag, ...);
 u2 add_constant_info(ConstantInfoTag tag, ...);
 

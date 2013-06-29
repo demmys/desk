@@ -8,21 +8,18 @@ int main(int argc, char *argv[]){
     FILE *fp;
 
     // open file
-    if(argc < 2){
-        fprintf(stderr, "no input files\n");
-        exit(1);
-    }
-    if(!(fp = fopen(argv[1], "r"))){
-        fprintf(stderr, "%s: no such file or directory\n", argv[1]);
-        exit(1);
-    }
+    if(argc < 2)
+        compile_error(ERROR_NO_INPUT_FILES);
+    if(!(fp = fopen(argv[1], "r")))
+        compile_error(ERROR_NO_SUCH_FILE, argv[1]);
     yyin = fp;
 
     compiler = create_compiler(argv[1]);
     if(yyparse()){
-        compile_error(get_current_compiler() -> current_line_number, "parse error");
+        compile_error(ERROR_PARSE, get_current_compiler()->current_line_number);
     }
-    emit(generate(compiler));
+    //emit(generate(compiler));
+    generate(compiler);
     dispose_compiler(compiler);
     dispose_classfile(classfile);
 
