@@ -90,7 +90,7 @@ struct ClassFile_tag{
     u2 methods_count;
     Definition methods[];
     u2 attributes_count;
-    AttributeInfo source_file;
+    AttributeInfo source_file[];
     char *emit_file;
 };
 

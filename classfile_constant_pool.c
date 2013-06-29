@@ -98,6 +98,9 @@ u2 add_constant_info(ConstantInfoTag tag, ...){
     return cf->constant_pool_count;
 }
 
+void dispose_constant_pool(ConstantInfo *ci){
+    free(ci);
+}
 
 
 
