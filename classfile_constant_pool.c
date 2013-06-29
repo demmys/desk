@@ -1,4 +1,3 @@
-#include <stdarg.h>
 #include "classfile_constant_pool.h.h"
 
 u2 search_constant_info(ConstantInfoTag tag, ...){
@@ -62,10 +61,12 @@ u2 add_constant_info(ConstantInfoTag tag, ...){
     if(index > 0)
         return index;
 
+    /* realloc constant pool */
     cf->constant_pool = realloc(cf->constant_pool, sizeof(ConstantInfo) * (cf->constant_pool_count + 1));
-    ci = &(cf->constant_pool[cf->constant_pool_count++]);
+    ci = &(cf->constant_pool[(cf->constant_pool_count)++]);
     ci->tag = tag;
 
+    /* set value to new constant info */
     switch(tag){
         case CONSTANT_Utf8:
             ci->u.utf8_info.value = va_arg(args, char *);

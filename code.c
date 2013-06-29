@@ -206,5 +206,5 @@ OpcodeInfo opcode_table[] = {
     { 0xc9, "jsr_w", 0, 0 },
     //{ 0xca, "breakpoint", 0, 0 },
     //{ 0xfe, "impdep1", 0, 0 },
-    //{ 0xff, "impdep2", 0, 0 },
+    //{ 0xff, "impdep2", 0, 0 }
 };
