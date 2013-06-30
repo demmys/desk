@@ -22,6 +22,7 @@ typedef enum{
 /*
  * struct declaration
  */
+typedef struct ConstantInfo_tag ConstantInfo;
 typedef struct{
     u2 class_index;
     u2 name_and_type_index;
@@ -36,9 +37,9 @@ typedef struct{
 } NameAndTypeInfo;
 typedef struct{
     u2 length;
-    char *value;
+    const char *value;
 } Utf8Info;
-typedef struct{
+struct ConstantInfo_tag{
     ConstantInfoTag tag;
     union{
         u2 cp_index;
@@ -48,7 +49,9 @@ typedef struct{
         NameAndTypeInfo name_and_type_info;
         Utf8Info utf8_info;
     } u;
-} ConstantInfo;
+    ConstantInfo *prev;
+    ConstantInfo *next;
+};
 
 /*
  * classfile_constant_pool.c function prototype

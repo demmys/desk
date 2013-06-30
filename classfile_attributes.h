@@ -22,52 +22,78 @@ typedef enum{
  */
 typedef struct AttributeInfo_tag AttributeInfo;
 
-typedef struct{
+typedef struct LocalVariable_tag LocalVariable;
+struct LocalVariable_tag{
     u2 start_pc;
     u2 length;
     u2 name_index;
     u2 descriptor_index;
     u2 index;
-} LocalVariable;
+    LocalVariable *prev;
+    LocalVariable *next;
+};
 typedef struct{
     u2 local_variable_table_length;
     LocalVariable *local_variable_table;
 } LocalVariableTableAttribute;
 
-typedef struct{
+typedef struct LineNumber_tag LineNumber;
+struct LineNumber_tag{
     u2 start_pc;
     u2 line_number;
-} LineNumber;
+    LineNumber *prev;
+    LineNumber *next;
+};
 typedef struct{
     u2 line_number_table_length;
     LineNumber *line_number_table;
 } LineNumberTableAttribute;
 
-typedef struct{
+typedef struct InnerClass_tag InnerClass;
+struct InnerClass_tag{
     u2 inner_class_info_index;
     u2 outer_class_info_index;
     u2 inner_name_index;
     u2 inner_class_access_flags;
-} InnerClass;
+};
 typedef struct{
     u2 number_of_classes;
     InnerClass *classes;
 } InnerClassesAttribute;
 
+typedef struct ExceptionIndex_tag ExceptionIndex;
+struct ExceptionIndex_tag{
+    u2 exception_index;
+    ExceptionIndex *prev;
+    ExceptionIndex *next;
+};
 typedef struct{
+    u2 number_of_exceptions;
+    ExceptionIndex *exception_index_table;
+} ExceptionsAttribute;
+
+typedef struct Code_tag Code;
+struct Code_tag{
+    u1 code;
+    Code *prev;
+    Code *next;
+};
+typedef struct Exception_tag Exception;
+struct Exception_tag{
     u2 start_pc;
     u2 end_pc;
     u2 handler_pc;
     u2 catch_type;
-} ExceptionsAttribute;
-
+    Exception *prev;
+    Exception *next;
+};
 typedef struct{
     u2 max_stack;
     u2 max_locals;
     u4 code_length;
-    u1 *code;
+    Code *code;
     u2 exception_table_length;
-    ExceptionsAttribute *exception_table;
+    Exception *exception_table;
     u2 attributes_count;
     AttributeInfo *attributes;
 } CodeAttribute;
@@ -85,6 +111,8 @@ struct AttributeInfo_tag{
         LineNumberTableAttribute line_number_table_attribute;
         LocalVariableTableAttribute local_variable_table_attribute;
     } u;
+    AttributeInfo *prev;
+    AttributeInfo *next;
 };
 
 /*

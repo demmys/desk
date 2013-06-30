@@ -29,6 +29,8 @@ typedef struct{
     u2 descriptor_index;
     u2 attributes_count;
     AttributeInfo *attributes;
+    Definition *prev;
+    Definition *next;
 } Definition;
 
 typedef struct {
