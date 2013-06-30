@@ -47,6 +47,7 @@ static void init_class_file(char *source_file, char *super_class){
     emit_name[class_name_length + i] = '\0';
 
     cf->this_class_index = add_constant_info(CONSTANT_Class, class_name);
+    printf("%d, %d\n", cf->this_class_index, cf->constant_pool[cf->this_class_index - 1].tag);
     cf->super_class_index = add_constant_info(CONSTANT_Class, super_class);
     add_attribute_info(cf->source_file, &(cf->attributes_count), ATTRIBUTE_SourceFile, source_file);
     cf->emit_file = emit_name;

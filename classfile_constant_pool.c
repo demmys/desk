@@ -62,46 +62,46 @@ u2 search_constant_info(ConstantInfoTag tag, ...){
 
 u2 add_constant_info(ConstantInfoTag tag, ...){
     ClassFile *cf;
-    ConstantInfo *ci;
     va_list args;
-    u2 index;
+    //u2 index;
     char *arg1, *arg2, *arg3;
+    u2 index, child_index;
 
     cf = get_current_classfile();
     va_start(args, tag);
     /* if adding constant exists, return the index */
+    /*
     index = vsearch_constant_info(tag, args);
     if(index > 0)
         return index;
+        */
 
-    /* realloc constant pool */
+    /* realloc constant pool and remember index */
     cf->constant_pool = realloc(cf->constant_pool, sizeof(ConstantInfo) * (cf->constant_pool_count + 1));
-    ci = &(cf->constant_pool[(cf->constant_pool_count)++]);
-    ci->tag = tag;
+    index = ++(cf->constant_pool_count);
 
     /* set value to new constant info */
-    printf("tag: %d", tag);
+    cf->constant_pool[index].tag = tag;
     switch(tag){
         case CONSTANT_Utf8:
             arg1 = va_arg(args, char *);
-            ci->u.utf8_info.value = arg1;
-            printf("\thoge: %s\n", arg1);
-            ci->u.utf8_info.length = strlen(arg1);
+            cf->constant_pool[index].u.utf8_info.value = arg1;
+            cf->constant_pool[index].u.utf8_info.length = strlen(arg1);
             break;
         case CONSTANT_Class:
         case CONSTANT_String:
             arg1 = va_arg(args, char *);
-            printf("\tfuga: %s\n", arg1);
-            ci->u.cp_index = add_constant_info(CONSTANT_Utf8, arg1);
+            child_index = add_constant_info(CONSTANT_Utf8, arg1);
+            cf->constant_pool[index].u.cp_index = child_index;
             break;
         case CONSTANT_Integer:
         case CONSTANT_Float:
-            ci->u.bytes = va_arg(args, u4);
+            cf->constant_pool[index].u.bytes = va_arg(args, u4);
             break;
         case CONSTANT_Long:
         case CONSTANT_Double:
-            ci->u.long_bytes.high_bytes = va_arg(args, u4);
-            ci->u.long_bytes.low_bytes = va_arg(args, u4);
+            cf->constant_pool[index].u.long_bytes.high_bytes = va_arg(args, u4);
+            cf->constant_pool[index].u.long_bytes.low_bytes = va_arg(args, u4);
             break;
         case CONSTANT_Fieldref:
         case CONSTANT_Methodref:
@@ -109,17 +109,21 @@ u2 add_constant_info(ConstantInfoTag tag, ...){
             arg1 = va_arg(args, char *);
             arg2 = va_arg(args, char *);
             arg3 = va_arg(args, char *);
-            ci->u.reference_info.class_index = add_constant_info(CONSTANT_Class, arg1);
-            ci->u.reference_info.name_and_type_index = add_constant_info(CONSTANT_NameAndType, arg2, arg3);
+            child_index = add_constant_info(CONSTANT_Class, arg1);
+            cf->constant_pool[index].u.reference_info.class_index = child_index;
+            child_index = add_constant_info(CONSTANT_NameAndType, arg2, arg3);
+            cf->constant_pool[index].u.reference_info.name_and_type_index = child_index;
             break;
         case CONSTANT_NameAndType:
             arg1 = va_arg(args, char *);
             arg2 = va_arg(args, char *);
-            ci->u.name_and_type_info.name_index = add_constant_info(CONSTANT_Utf8, arg1);
-            ci->u.name_and_type_info.descriptor_index = add_constant_info(CONSTANT_Utf8, arg2);
+            child_index = add_constant_info(CONSTANT_Utf8, arg1);
+            cf->constant_pool[index].u.name_and_type_info.name_index = child_index;
+            child_index = add_constant_info(CONSTANT_Utf8, arg2);
+            cf->constant_pool[index].u.name_and_type_info.descriptor_index = child_index;
     }
     va_end(args);
-    return cf->constant_pool_count;
+    return index;
 }
 
 void dispose_constant_pool(ConstantInfo *ci){
