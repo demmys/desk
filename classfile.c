@@ -6,6 +6,12 @@ ClassFile *get_current_classfile(){
     return static_current_classfile;
 }
 
+void *classfile_storage_malloc(size_t size){
+    void *p;
+    p = storage_malloc(static_current_classfile->classfile_storage, size);
+    return p;
+}
+
 ClassFile *create_class_file(){
     ClassFile *cf;
 

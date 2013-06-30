@@ -12,7 +12,7 @@ char *compile_error_format[] = {
 
 char *system_error_format[] = {
     "dummy",
-    "orderd constant pool index %d is too large.\n",
+    "invalid constant pool index %d.\n",
     "unknown constant tag number %d.\n"
 };
 

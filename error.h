@@ -14,7 +14,7 @@ typedef enum{
 } CompileErrorType;
 
 typedef enum{
-    ERROR_CP_INDEX_TOO_LARGE = 1,
+    ERROR_INVALID_CP_INDEX = 1,
     ERROR_UNKNOWN_CONSTANT_TAG
 } SystemErrorType;
 

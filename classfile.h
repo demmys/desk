@@ -1,5 +1,6 @@
 #ifndef CLASSFILE_H_INCLUDED
 #define CLASSFILE_H_INCLUDED
+#include "storage.h"
 #include "error.h"
 #include "classfile_constant_pool.h"
 #include "classfile_attributes.h"
@@ -51,12 +52,14 @@ typedef struct {
     u2 attributes_count;
     AttributeInfo *source_file;
     char *emit_file;
+    Storage *classfile_storage;
 } ClassFile;
 
 /*
  * classfile.c function prototype
  */
 ClassFile *get_current_classfile();
+void *classfile_storage_malloc(size_t size);
 ClassFile *create_class_file();
 void dispose_classfile(ClassFile *cf);
 

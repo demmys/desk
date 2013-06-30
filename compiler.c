@@ -6,9 +6,6 @@ Compiler *get_current_compiler(){
     return static_current_compiler;
 }
 
-/*
- * Methods work with compiler
- */
 void *compiler_storage_malloc(size_t size){
     void *p;
     p = storage_malloc(static_current_compiler->compile_storage, size);
