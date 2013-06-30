@@ -63,18 +63,14 @@ u2 search_constant_info(ConstantInfoTag tag, ...){
 u2 add_constant_info(ConstantInfoTag tag, ...){
     ClassFile *cf;
     va_list args;
-    //u2 index;
-    char *arg1, *arg2, *arg3;
-    u2 index, child_index;
 
     cf = get_current_classfile();
-    va_start(args, tag);
     /* if adding constant exists, return the index */
-    /*
+    va_start(args, tag);
     index = vsearch_constant_info(tag, args);
+    va_end(args, tag);
     if(index > 0)
         return index;
-        */
 
     /* realloc constant pool and remember index */
     cf->constant_pool = realloc(cf->constant_pool, sizeof(ConstantInfo) * (cf->constant_pool_count + 1));
@@ -82,6 +78,7 @@ u2 add_constant_info(ConstantInfoTag tag, ...){
 
     /* set value to new constant info */
     cf->constant_pool[index].tag = tag;
+    va_start(args, tag);
     switch(tag){
         case CONSTANT_Utf8:
             arg1 = va_arg(args, char *);
