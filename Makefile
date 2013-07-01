@@ -2,30 +2,42 @@ CC = gcc
 CFLAGS = -Wall -O2
 
 TARGET = desk
-OBJS = lex.yy.o y.tab.o main.o error.o storage.o compiler.o create.o classfile_constant_pool.o classfile_attributes.o classfile.o generate.o emit.o
-MADE = $(TARGET) lex.yy.c y.tab.h y.tab.c
-LEX = desk.l
-YACC = desk.y
+OBJS = \
+	   main.o\
+	   utils.o\
+	   compile.o\
+	   generate.o\
+	   emit.o
+MADE = $(TARGET)
+
+.SUFFIXES: .c .o
+.PHONY: all clean clear help
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
+	cd utils; $(MAKE);
+	cd compile; $(MAKE);
+	cd generate; $(MAKE);
+	cd emit; $(MAKE);
 	$(CC) -o $@ $^
 
+.c.o:
+	$(CC) $(CFLAGS) -c -Iutils -Icompile -Igenerate -Iemit $<
+
 clean:
+	cd utils; $(MAKE) clean;
+	cd compile; $(MAKE) clean;
+	cd generate; $(MAKE) clean;
+	cd emit; $(MAKE) clean;
 	rm -f $(OBJS)
 
 clear: clean
+	cd utils; $(MAKE) clear;
+	cd compile; $(MAKE) clear;
+	cd generate; $(MAKE) clear;
+	cd emit; $(MAKE) clear;
 	rm -f $(MADE)
-
-.c.o:
-	$(CC) $(CFLAGS) -c $<
-
-lex.yy.c: $(LEX) y.tab.h
-	lex $<
-
-y.tab.c y.tab.h: $(YACC)
-	yacc -d $<
 
 help:
 	@echo "USAGE: make [options]"

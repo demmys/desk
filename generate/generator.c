@@ -1,4 +1,4 @@
-#include "generate.h"
+#include "generator.h"
 
 //TODO test
 void test_constant_pool();

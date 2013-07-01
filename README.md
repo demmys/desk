@@ -39,82 +39,82 @@ Cと同じ意味合いの二項演算子`+`、`-`、`*`、`/`、`%`及び単項�
 + Deskでいくつかのベンチマークコードを実装する
 
 ###中身###
-+ ファイル名 < includeヘッダファイル :  
++ `ファイル名 < includeヘッダファイル` :  
 ファイルの説明
 
-+ Makefile :  
++ `Makefile` :  
 `make`でコンパイル、`make help`でその他の使い方の確認ができる
 
-+ storage.h :  
++ `storage.h` :  
 ストレージ方式を用いたメモリ管理のための構造体、関数プロトタイプの宣言ファイル
 
-+ storage.c < storage.h :  
++ `storage.c < storage.h` :  
 ストレージ方式を用いたメモリ管理のための関数実装ファイル
 
-+ error.h :  
++ `error.h` :  
 エラーを表現するための列挙型定数、関数プロトタイプの宣言ファイル
 
-+ error.c < error.h :  
++ `error.c < error.h` :  
 エラーを実現するための関数、エラー文実装ファイル
 
-+ compiler.h < storage.h, error.h :  
++ `compiler.h < storage.h, error.h` :  
 Compiler構造体を中心とする、構文木生成のための構造体、列挙型定数、関数プロトタイプの宣言ファイル
 
-+ compiler.c < compiler.h :  
++ `compiler.c < compiler.h` :  
 Compiler構造体関係の関数実装、静的なコンパイラ型変数の宣言ファイル
 
-+ create.h < compiler.h :  
++ `create.h < compiler.h` :  
 構文解析中に使用するメソッドのプロトタイプ宣言ファイル
 
-+ create.c < create.h :  
++ `create.c < create.h` :  
 構文解析中に使用する構文に対応したオブジェクトを生成する関数の実装ファイル
 
-+ desk.l < create.h :  
++ `desk.l < create.h` :  
 一応型や識別子も解析するlexファイル
 
-+ desk.y < create.h :  
++ `desk.y < create.h` :  
 mainとその右辺の定数式のみ解析できるyaccファイル
 
-+ classfile_base.h :  
++ `classfile_base.h` :  
 クラスファイル内で用いられる識別子のtypedef宣言ファイル
 
-+ classfile_constant_pool.h < classfile_base.h :  
++ `classfile_constant_pool.h < classfile_base.h` :  
 ConstantInfo構造体を中心とする、コンスタントプールを実現するための構造体、列挙型定数、関数プロトタイプ宣言ファイル
 
-+ classfile_attributes.h < classfile_base.h :  
++ `classfile_attributes.h < classfile_base.h` :  
 AttributeInfo構造体を中心とする、アトリビュートを実現するための構造体、列挙型定数、関数プロトタイプ宣言ファイル
 
-+ code.h < classfile_base.h :  
++ `code.h < classfile_base.h` :  
 これから使用するOpcode構造体を中心とする、JVMのオペコードを生成するための構造体宣言ファイル
 
-+ code.c < code.h:  
++ `code.c < code.h:  
 これから使用するJVMのオペコード情報を保持した配列の実装ファイル
 
-+ classfile.h < storage.h, error.h, classfile_constant_pool.h, classfile_attributes.h :  
++ `classfile.h < storage.h, error.h, classfile_constant_pool.h, classfile_attributes.h` :  
 ClassFile構造体を中心とする、クラスファイルのメモリ内表現を生成するのための構造体、列挙型定数、関数プロトタイプの宣言ファイル
 
-+ generate.h < create.h, classfile.h :  
++ `generate.h < create.h, classfile.h` :  
 ClassFile構造体のメンバを生成するための構造体、関数プロトタイプの宣言ファイル
 
-+ generate.c < generate.h :  
++ `generate.c < generate.h` :  
 ClassFile構造体のメンバを生成するための関数実装ファイル
 
-+ emit.h < generate.h :  
++ `emit.h < generate.h` :  
 クラスファイルを生成するための関数プロトタイプ宣言ファイル
 
-+ emit.c < emit.h :  
++ `emit.c < emit.h` :  
 クラスファイルを生成するための関数実装ファイル
 
-+ main.c < emit.h, y.tab.h :  
++ `main.c < emit.h, y.tab.h` :  
 実際に各生成フェーズを実行するコンパイラのメインエントリポイント実装ファイル
 
-+ Test.desk :  
++ `Test.desk` :  
 最終的にコンパイルしたいファイルの簡単なもの(四則演算のみ)
 
-+ Test2.desk :  
++ `Test2.desk` :  
 最終的にコンパイルしたいファイルの簡単なもの(関数呼び出しあり)
 
-+ Test3.desk :  
++ `Test3.desk` :  
 最終的にコンパイルしたいエラトステネスの篩プログラム
 
 ###参考###
