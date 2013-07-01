@@ -30,7 +30,7 @@ ClassFile *create_class_file(){
     cf->fields_count= 0;
     cf->methods_count = 0;
     cf->methods = NULL;
-    cf->attributes_count = 1;
+    cf->attributes_count = 0;
     cf->source_file = NULL;
     cf->emit_file = NULL;
     cf->classfile_storage = storage;

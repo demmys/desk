@@ -118,6 +118,6 @@ struct AttributeInfo_tag{
 /*
  * classfile_attributes.c function prototype
  */
-void add_attribute_source_file_info(AttributeInfo *ai_list, u2 *list_length, char *source_file);
+void add_attribute_source_file_info(AttributeInfo **ai_list, u2 *list_length, char *source_file);
 
 #endif // CLASSFILE_ATTRIBUTES_H_INCLUDED

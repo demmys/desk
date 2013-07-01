@@ -129,7 +129,7 @@ static u2 add_constant_info(ConstantInfoTag tag, ...){
         cf->constant_pool->prev = cf->constant_pool;
         ci = cf->constant_pool;
     }
-    ++(cf->constant_pool_count);
+    (cf->constant_pool_count)++;
 
     /* set value to new constant info */
     ci->tag = tag;

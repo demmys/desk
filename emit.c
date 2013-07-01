@@ -11,25 +11,25 @@ void swap32(u4 *value){
 }
 
 void emit_prefixes(FILE *fp){
-    ClassFile *classfile;
+    ClassFile *cf;
 
-    classfile = get_current_classfile();
-    swap32(&(classfile->magic));
-    swap16(&(classfile->minor_version));
-    swap16(&(classfile->major_version));
-    classfile->constant_pool_count++;
-    swap16(&(classfile->constant_pool_count));
+    cf = get_current_classfile();
+    swap32(&(cf->magic));
+    swap16(&(cf->minor_version));
+    swap16(&(cf->major_version));
+    cf->constant_pool_count++;
+    swap16(&(cf->constant_pool_count));
 
-    fwrite(classfile, sizeof(u1), 10, fp);
+    fwrite(cf, sizeof(u1), 10, fp);
 }
 
 void emit_constant_pool(FILE *fp){
-    ClassFile *classfile;
+    ClassFile *cf;
     ConstantInfo *ci;
     u2 len;
 
-    classfile = get_current_classfile();
-    for(ci = classfile->constant_pool; ci; ci = ci->next){
+    cf = get_current_classfile();
+    for(ci = cf->constant_pool; ci; ci = ci->next){
         u1 tag = ci->tag;
         fwrite(&tag, sizeof(u1), 1, fp);
         switch(ci->tag){
@@ -67,45 +67,41 @@ void emit_constant_pool(FILE *fp){
 }
 
 void emit_middles(FILE *fp){
-    ClassFile *classfile;
+    ClassFile *cf;
 
-    classfile = get_current_classfile();
-    swap16(&(classfile->access_flags));
-    swap16(&(classfile->this_class_index));
-    swap16(&(classfile->super_class_index));
-    swap16(&(classfile->interfaces_count));
-    swap16(&(classfile->fields_count));
-    swap16(&(classfile->methods_count));
+    cf = get_current_classfile();
+    swap16(&(cf->access_flags));
+    swap16(&(cf->this_class_index));
+    swap16(&(cf->super_class_index));
+    swap16(&(cf->interfaces_count));
+    swap16(&(cf->fields_count));
+    swap16(&(cf->methods_count));
 
-    fwrite(&(classfile->access_flags), sizeof(u1), 12, fp);
+    fwrite(&(cf->access_flags), sizeof(u1), 12, fp);
 }
 
-// TODO
 void emit_attributes(FILE *fp){
-    ClassFile *classfile;
-    //AttributeInfo *ai;
-    //u2 count;
+    ClassFile *cf;
 
-    classfile = get_current_classfile();
-    //count = classfile->attributes_count;
-    swap16(&(classfile->attributes_count));
-    swap16(&(classfile->source_file->attribute_name_index));
-    swap32(&(classfile->source_file->attribute_length));
-    swap16(&(classfile->source_file->u.cp_index));
+    cf = get_current_classfile();
+    swap16(&(cf->attributes_count));
+    swap16(&(cf->source_file->attribute_name_index));
+    swap32(&(cf->source_file->attribute_length));
+    swap16(&(cf->source_file->u.cp_index));
 
-    fwrite(&(classfile->attributes_count), sizeof(u1), 2, fp);
-    fwrite(&(classfile->source_file->attribute_name_index), sizeof(u1), 2, fp);
-    fwrite(&(classfile->source_file->attribute_length), sizeof(u1), 4, fp);
-    fwrite(&(classfile->source_file->u.cp_index), sizeof(u1), 2, fp);
+    fwrite(&(cf->attributes_count), sizeof(u1), 2, fp);
+    fwrite(&(cf->source_file->attribute_name_index), sizeof(u1), 2, fp);
+    fwrite(&(cf->source_file->attribute_length), sizeof(u1), 4, fp);
+    fwrite(&(cf->source_file->u.cp_index), sizeof(u1), 2, fp);
 }
 
 void emit(){
     FILE *fp;
-    ClassFile *classfile;
+    ClassFile *cf;
 
-    classfile = get_current_classfile();
-    if(!(fp = fopen(classfile->emit_file, "wb"))){
-        fprintf(stderr, "system error!\n%d: class file \"%s\" could not create\n", 0, classfile->emit_file);
+    cf = get_current_classfile();
+    if(!(fp = fopen(cf->emit_file, "wb"))){
+        fprintf(stderr, "system error!\n%d: class file \"%s\" could not create\n", 0, cf->emit_file);
         exit(1);
     }
 
@@ -115,5 +111,5 @@ void emit(){
     emit_attributes(fp);
 
     fclose(fp);
-    printf("generated %s\n", classfile->emit_file);
+    printf("generated %s\n", cf->emit_file);
 }

@@ -15,20 +15,21 @@ char *attribute_name[] = {
 
 // TODO implement calc attribute length function
 
-static AttributeInfo *add_attribute_info(AttributeInfo *ai_list, u2 *list_length, AttributeTag tag){
+static AttributeInfo *add_attribute_info(AttributeInfo **ai_list, u2 *list_length, AttributeTag tag){
     AttributeInfo *ai;
 
     /* add attributes */
-    if(ai_list){
+    if(*ai_list){
         ai = classfile_storage_malloc(sizeof(AttributeInfo));
         ai->next = NULL;
-        ai->prev = ai_list->prev;
+        ai->prev = (*ai_list)->prev;
         ai->prev->next = ai;
-        ai_list->prev = ai;
+        (*ai_list)->prev = ai;
     } else{
-        ai_list = classfile_storage_malloc(sizeof(AttributeInfo));
-        ai_list->next = NULL;
-        ai_list->prev = ai_list;
+        *ai_list = classfile_storage_malloc(sizeof(AttributeInfo));
+        (*ai_list)->next = NULL;
+        (*ai_list)->prev = *ai_list;
+        ai = *ai_list;
     }
     (*list_length)++;
 
@@ -39,7 +40,7 @@ static AttributeInfo *add_attribute_info(AttributeInfo *ai_list, u2 *list_length
     return ai;
 }
 
-void add_attribute_source_file_info(AttributeInfo *ai_list, u2 *list_length, char *source_file){
+void add_attribute_source_file_info(AttributeInfo **ai_list, u2 *list_length, char *source_file){
     AttributeInfo *ai;
 
     ai = add_attribute_info(ai_list, list_length, ATTRIBUTE_SourceFile);

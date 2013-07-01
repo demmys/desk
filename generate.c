@@ -51,7 +51,7 @@ static void init_class_file(char *source_file, char *super_class){
 
     cf->this_class_index = add_constant_class_info(class_name);
     cf->super_class_index = add_constant_class_info(super_class);
-    add_attribute_source_file_info(cf->source_file, &(cf->attributes_count), source_file);
+    add_attribute_source_file_info(&(cf->source_file), &(cf->attributes_count), source_file);
     cf->emit_file = emit_name;
 }
 
