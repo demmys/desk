@@ -28,11 +28,10 @@ void main_define(Statement *statement){
     Compiler *compiler;
 
     compiler = get_current_compiler();
-    if(compiler->main_statement){
-        compile_error(statement->line_number, "function main is already defined");
-    } else{
+    if(compiler->main_statement)
+        compile_error(ERROR_MAIN_ALREADY_DEFINED, statement->line_number);
+    else
         compiler->main_statement = statement;
-    }
 }
 
 /*

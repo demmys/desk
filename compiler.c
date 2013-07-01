@@ -6,14 +6,6 @@ Compiler *get_current_compiler(){
     return static_current_compiler;
 }
 
-/*
- * Methods work with compiler
- */
-void compile_error(int line_number, char *message){
-    fprintf(stderr, "compile error!\n%d: %s\n", line_number, message);
-    exit(1);
-}
-
 void *compiler_storage_malloc(size_t size){
     void *p;
     p = storage_malloc(static_current_compiler->compile_storage, size);
@@ -26,10 +18,10 @@ Compiler *create_compiler(char *source_file){
 
     storage = open_storage(0);
     compiler = storage_malloc(storage, sizeof(Compiler));
-    compiler->compile_storage = storage;
     compiler->source_file = source_file;
     compiler->main_statement = NULL;
     compiler->current_line_number = 1;
+    compiler->compile_storage = storage;
     static_current_compiler = compiler;
     return compiler;
 }

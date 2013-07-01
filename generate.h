@@ -12,13 +12,5 @@
  * generate.c function prototype
  */
 ClassFile *generate(Compiler *compiler);
-ConstantInfo *get_constant_info(u2 index);
-u2 add_utf8(char *value);
-u2 add_class(char *class_name);
-u2 add_name_and_type(char *name, char *type);
-u2 add_methodref(char *class, char *name, char *type);
-AttributeInfo *set_source_file_attribute(char *source_file);
-//TODO test
-void test_constant_pool();
 
 #endif // GENERATE_H_INCLUDED
