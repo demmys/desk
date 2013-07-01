@@ -13,9 +13,11 @@ void *classfile_storage_malloc(size_t size){
 }
 
 ClassFile *create_class_file(){
+    Storage *storage;
     ClassFile *cf;
 
-    cf = malloc(sizeof(ClassFile));
+    storage = open_storage(0);
+    cf = storage_malloc(storage, sizeof(ClassFile));
     cf->magic = 0xcafebabe;
     cf->minor_version = 0;
     cf->major_version = 50;
@@ -31,14 +33,11 @@ ClassFile *create_class_file(){
     cf->attributes_count = 1;
     cf->source_file = NULL;
     cf->emit_file = NULL;
+    cf->classfile_storage = storage;
     static_current_classfile = cf;
     return cf;
 }
 
 void dispose_classfile(ClassFile *cf){
-    free(cf->constant_pool[cf->this_class_index - 1].u.utf8_info.value);
-    free(cf->emit_file);
-    dispose_constant_pool(cf->constant_pool);
-    // dispose_definition(cf->methods);
-    // dispose_attributes(cf->source_file);
+    dispose_storage(cf->classfile_storage);
 }

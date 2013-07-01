@@ -8,59 +8,94 @@ static u2 vsearch_constant_info(ConstantInfoTag tag, va_list args){
     ConstantInfo *ci;
     u2 i;
 
+    u2 arg1, arg2;
+    char *arg3;
+    u4 arg4, arg5;
+
+    switch(tag){
+        case CONSTANT_Utf8:
+            arg1 = va_arg(args, int);
+            arg3 = va_arg(args, char *);
+            break;
+        case CONSTANT_Class:
+        case CONSTANT_String:
+            arg1 = va_arg(args, int);
+            break;
+        case CONSTANT_Integer:
+        case CONSTANT_Float:
+            arg4 = va_arg(args, u4);
+            break;
+        case CONSTANT_Long:
+        case CONSTANT_Double:
+            arg4 = va_arg(args, u4);
+            arg5 = va_arg(args, u4);
+            break;
+        case CONSTANT_Fieldref:
+        case CONSTANT_Methodref:
+        case CONSTANT_InterfaceMethodref:
+            arg1 = va_arg(args, int);
+            arg2 = va_arg(args, int);
+            break;
+        case CONSTANT_NameAndType:
+            arg1 = va_arg(args, int);
+            arg2 = va_arg(args, int);
+            break;
+        default:
+            system_error(ERROR_UNKNOWN_CONSTANT_TAG, tag);
+    }
+
     cf = get_current_classfile();
-    for(ci = cf->constant_pool; ci; ci = ci->next){
+    for(i = 1, ci = cf->constant_pool; ci; ci = ci->next, i++){
         if(ci->tag == tag){
             switch(tag){
                 case CONSTANT_Utf8:
-                    if(!strcmp(ci->u.utf8_info.value, va_arg(args, char *)))
-                            return ++i;
+                    if(!strcmp(ci->u.utf8_info.value, arg3))
+                        return i;
                     break;
                 case CONSTANT_Class:
                 case CONSTANT_String:
-                    if(ci->u.cp_index == va_arg(args, int))
-                        return ++i;
+                    if(ci->u.cp_index == arg1)
+                        return i;
                     break;
                 case CONSTANT_Integer:
                 case CONSTANT_Float:
-                    if(ci->u.bytes == va_arg(args, u4))
-                        return ++i;
+                    if(ci->u.bytes == arg4)
+                        return i;
                     break;
                 case CONSTANT_Long:
                 case CONSTANT_Double:
-                    if(ci->u.long_bytes.low_bytes == va_arg(args, u4))
-                        if(ci->u.long_bytes.high_bytes == va_arg(args, u4))
-                            return ++i;
+                    if(ci->u.long_bytes.low_bytes == arg4)
+                        if(ci->u.long_bytes.high_bytes == arg5)
+                            return i;
                     break;
                 case CONSTANT_Fieldref:
                 case CONSTANT_Methodref:
                 case CONSTANT_InterfaceMethodref:
-                    if(ci->u.reference_info.class_index == va_arg(args, int))
-                        if(ci->u.reference_info.name_and_type_index == va_arg(args, int))
-                            return ++i;
+                    if(ci->u.reference_info.class_index == arg1)
+                        if(ci->u.reference_info.name_and_type_index == arg2)
+                            return i;
                     break;
                 case CONSTANT_NameAndType:
-                    if(ci->u.name_and_type_info.name_index == va_arg(args, int))
-                        if(ci->u.name_and_type_info.descriptor_index == va_arg(args, int))
-                                return ++i;
-                    break;
-                default:
-                    system_error(ERROR_UNKNOWN_CONSTANT_TAG, tag);
+                    if(ci->u.name_and_type_info.name_index == arg1)
+                        if(ci->u.name_and_type_info.descriptor_index == arg2)
+                            return i;
             }
         }
     }
     return 0;
 }
 
-static u2 search_constant_info(ConstantInfoTag tag, ...){
-    va_list args;
-    u2 index;
+/*
+   u2 search_constant_info(ConstantInfoTag tag, ...){
+   va_list args;
+   u2 index;
 
-    va_start(args, tag);
-    index = vsearch_constant_info(tag, args);
-    va_end(args);
-    return index;
-}
+   va_start(args, tag);
+   index = vsearch_constant_info(tag, args);
+   va_end(args);
+   return index;
+   }
+   */
 
 
 /*
@@ -76,10 +111,10 @@ static u2 add_constant_info(ConstantInfoTag tag, ...){
 
     /* if adding constant exists, return the index */
     va_start(args, tag);
-    index = vsearch_constant_info(tag, args) > 0;
+    index = vsearch_constant_info(tag, args);
     if(index > 0)
         return index;
-    va_end(args, tag);
+    va_end(args);
 
     /* add constant pool */
     if(cf->constant_pool){
@@ -88,11 +123,11 @@ static u2 add_constant_info(ConstantInfoTag tag, ...){
         ci->prev = cf->constant_pool->prev;
         ci->prev->next = ci;
         cf->constant_pool->prev = ci;
-    }
-    else{
+    } else{
         cf->constant_pool = classfile_storage_malloc(sizeof(ConstantInfo));
         cf->constant_pool->next = NULL;
         cf->constant_pool->prev = cf->constant_pool;
+        ci = cf->constant_pool;
     }
     ++(cf->constant_pool_count);
 
@@ -171,7 +206,7 @@ u2 add_constant_interface_method_info(char *class, char *name, char *type){
 /*
  * get method
  */
-ConstantInfo *getConstantInfo(int index){
+ConstantInfo *get_constant_info(int index){
     ClassFile *cf;
     ConstantInfo *ci;
     int i;
@@ -189,4 +224,5 @@ ConstantInfo *getConstantInfo(int index){
         }
     }
     system_error(ERROR_INVALID_CP_INDEX, index);
+    return NULL;
 }

@@ -1,5 +1,8 @@
 #include "generate.h"
 
+//TODO test
+void test_constant_pool();
+
 extern char *attribute_name[];
 
 static int format_name(char *file_name){
@@ -34,8 +37,8 @@ static void init_class_file(char *source_file, char *super_class){
 
     cf = get_current_classfile();
     class_name_length = format_name(source_file);
-    class_name = malloc(sizeof(char *) * (class_name_length + 1));
-    emit_name = malloc(sizeof(char *) * (class_name_length + OUTPUT_EXTENSION_LENGTH + 1));
+    class_name = classfile_storage_malloc(sizeof(char *) * (class_name_length + 1));
+    emit_name = classfile_storage_malloc(sizeof(char *) * (class_name_length + OUTPUT_EXTENSION_LENGTH + 1));
     for(i = 0; i < class_name_length; i++){
         class_name[i] = source_file[i];
         emit_name[i] = source_file[i];
@@ -46,10 +49,9 @@ static void init_class_file(char *source_file, char *super_class){
     class_name[class_name_length] = '\0';
     emit_name[class_name_length + i] = '\0';
 
-    cf->this_class_index = add_constant_info(CONSTANT_Class, class_name);
-    printf("%d, %d\n", cf->this_class_index, cf->constant_pool[cf->this_class_index - 1].tag);
-    cf->super_class_index = add_constant_info(CONSTANT_Class, super_class);
-    add_attribute_info(cf->source_file, &(cf->attributes_count), ATTRIBUTE_SourceFile, source_file);
+    cf->this_class_index = add_constant_class_info(class_name);
+    cf->super_class_index = add_constant_class_info(super_class);
+    add_attribute_source_file_info(cf->source_file, &(cf->attributes_count), source_file);
     cf->emit_file = emit_name;
 }
 
@@ -59,14 +61,14 @@ ClassFile *generate(Compiler *compiler){
     cf = create_class_file();
     init_class_file(compiler->source_file, "java/lang/Object");
     //TODO set constructor in specific method(set constructor method method)
-    add_constant_info(CONSTANT_Utf8, attribute_name[ATTRIBUTE_Code]);
-    add_constant_info(CONSTANT_Utf8, attribute_name[ATTRIBUTE_LineNumberTable]);
-    add_constant_info(CONSTANT_Methodref, "java/lang/Object", "<init>", "()V");
-    add_constant_info(CONSTANT_Utf8, "main");
-    add_constant_info(CONSTANT_Utf8, "([Ljava/lang/String;)V");
+    add_constant_utf8_info(attribute_name[ATTRIBUTE_Code]);
+    add_constant_utf8_info(attribute_name[ATTRIBUTE_LineNumberTable]);
+    add_constant_method_info("java/lang/Object", "<init>", "()V");
+    add_constant_utf8_info("main");
+    add_constant_utf8_info("([Ljava/lang/String;)V");
 
     //TODO test
-    test_constant_pool();
+    //test_constant_pool();
 
     return cf;
 }
@@ -291,39 +293,38 @@ Definition *set_constructor(){
 // TODO test
 void test_constant_pool(){
     ClassFile *cf = get_current_classfile();
-    ConstantInfo ci;
-    int i, temp;
+    ConstantInfo *ci, *ci_temp;
+    int temp, i;
 
-    for(i = 0; i < cf->constant_pool_count; i++){
+    for(ci = cf->constant_pool, i = 0; ci; ci = ci->next, i++){
         printf("index: %d\n", i + 1);
-        ci = cf->constant_pool[i];
-        switch(ci.tag){
+        switch(ci->tag){
             case CONSTANT_Utf8:
-                printf("\tUTF-8: %d, %s\n", ci.u.utf8_info.length, ci.u.utf8_info.value);
+                printf("\tUTF-8: %d, %s\n", ci->u.utf8_info.length, ci->u.utf8_info.value);
                 break;
             case CONSTANT_Class:
-                temp = ci.u.cp_index;
-                printf("\tClass: %d // %s\n", temp, cf->constant_pool[temp - 1].u.utf8_info.value);
+                temp = ci->u.cp_index;
+                printf("\tClass: %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
                 break;
             case CONSTANT_Methodref:
-                temp = ci.u.reference_info.class_index;
+                temp = ci->u.reference_info.class_index;
                 printf("\tMethod: %d // ", temp);
-                temp = cf->constant_pool[temp - 1].u.cp_index;
-                printf("%s\n", cf->constant_pool[temp - 1].u.utf8_info.value);
-                ci = cf->constant_pool[ci.u.reference_info.name_and_type_index - 1];
-                temp = ci.u.name_and_type_info.name_index;
-                printf("\t\t %d // %s\n", temp, cf->constant_pool[temp - 1].u.utf8_info.value);
-                temp = ci.u.name_and_type_info.descriptor_index;
-                printf("\t\t, %d // %s\n", temp, cf->constant_pool[temp - 1].u.utf8_info.value);
+                temp = get_constant_info(temp)->u.cp_index;
+                printf("%s\n", get_constant_info(temp)->u.utf8_info.value);
+                ci_temp = get_constant_info(ci->u.reference_info.name_and_type_index);
+                temp = ci_temp->u.name_and_type_info.name_index;
+                printf("\t\t %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
+                temp = ci_temp->u.name_and_type_info.descriptor_index;
+                printf("\t\t, %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
                 break;
             case CONSTANT_NameAndType:
-                temp = ci.u.name_and_type_info.name_index;
-                printf("\tNameAndType: %d // %s\n", temp, cf->constant_pool[temp - 1].u.utf8_info.value);
-                temp = ci.u.name_and_type_info.descriptor_index;
-                printf("\t\t, %d // %s\n", temp, cf->constant_pool[temp - 1].u.utf8_info.value);
+                temp = ci->u.name_and_type_info.name_index;
+                printf("\tNameAndType: %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
+                temp = ci->u.name_and_type_info.descriptor_index;
+                printf("\t\t, %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
                 break;
             default:
-                printf("\ttag: %d\n", ci.tag);
+                printf("\ttag: %d\n", ci->tag);
         }
     }
 }

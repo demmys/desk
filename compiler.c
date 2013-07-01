@@ -18,10 +18,10 @@ Compiler *create_compiler(char *source_file){
 
     storage = open_storage(0);
     compiler = storage_malloc(storage, sizeof(Compiler));
-    compiler->compile_storage = storage;
     compiler->source_file = source_file;
     compiler->main_statement = NULL;
     compiler->current_line_number = 1;
+    compiler->compile_storage = storage;
     static_current_compiler = compiler;
     return compiler;
 }

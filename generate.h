@@ -12,7 +12,5 @@
  * generate.c function prototype
  */
 ClassFile *generate(Compiler *compiler);
-//TODO test
-void test_constant_pool();
 
 #endif // GENERATE_H_INCLUDED

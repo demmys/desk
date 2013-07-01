@@ -24,7 +24,8 @@ typedef enum{
 /*
  * struct declaration
  */
-typedef struct{
+typedef struct Definition_tag Definition;
+struct Definition_tag{
     u2 access_flags;
     u2 name_index;
     u2 descriptor_index;
@@ -32,7 +33,7 @@ typedef struct{
     AttributeInfo *attributes;
     Definition *prev;
     Definition *next;
-} Definition;
+};
 
 typedef struct {
     u4 magic;
