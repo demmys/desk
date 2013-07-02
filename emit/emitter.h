@@ -1,6 +1,6 @@
 #ifndef EMIT_H_INCLUDED
 #define EMIT_H_INCLUDED
-#include "generate.h"
+#include "generator.h"
 
 /*
  * emit.c function prototype
