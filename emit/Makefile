@@ -15,7 +15,7 @@ $(TARGET): $(OBJS)
 .c.o:
 	$(CC) $(CFLAGS) -I../generate -I../compile -I../utils -c $<
 
-emitter.o: emit.h ../generate/generator.h
+emitter.o: emitter.h ../generate/generator.h
 
 clean:
 	rm -f $(OBJS)

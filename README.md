@@ -42,9 +42,7 @@ Cと同じ意味合いの二項演算子`+`、`-`、`*`、`/`、`%`及び単項�
 + `ファイル名 < includeヘッダファイル` :  
 ファイルの説明
 
-+ `Makefile` :  
-`make`でコンパイル、`make help`でその他の使い方の確認ができる
-
+#utils/#
 + `storage.h` :  
 ストレージ方式を用いたメモリ管理のための構造体、関数プロトタイプの宣言ファイル
 
@@ -57,6 +55,7 @@ Cと同じ意味合いの二項演算子`+`、`-`、`*`、`/`、`%`及び単項�
 + `error.c < error.h` :  
 エラーを実現するための関数、エラー文実装ファイル
 
+#compile/#
 + `compiler.h < storage.h, error.h` :  
 Compiler構造体を中心とする、構文木生成のための構造体、列挙型定数、関数プロトタイプの宣言ファイル
 
@@ -75,6 +74,7 @@ Compiler構造体関係の関数実装、静的なコンパイラ型変数の宣
 + `desk.y < create.h` :  
 mainとその右辺の定数式のみ解析できるyaccファイル
 
+#generate#
 + `classfile_base.h` :  
 クラスファイル内で用いられる識別子のtypedef宣言ファイル
 
@@ -93,19 +93,21 @@ AttributeInfo構造体を中心とする、アトリビュートを実現する�
 + `classfile.h < storage.h, error.h, classfile_constant_pool.h, classfile_attributes.h` :  
 ClassFile構造体を中心とする、クラスファイルのメモリ内表現を生成するのための構造体、列挙型定数、関数プロトタイプの宣言ファイル
 
-+ `generate.h < create.h, classfile.h` :  
++ `generator.h < create.h, classfile.h` :  
 ClassFile構造体のメンバを生成するための構造体、関数プロトタイプの宣言ファイル
 
-+ `generate.c < generate.h` :  
++ `generator.c < generator.h` :  
 ClassFile構造体のメンバを生成するための関数実装ファイル
 
-+ `emit.h < generate.h` :  
+#emit/#
++ `emitter.h < generator.h` :  
 クラスファイルを生成するための関数プロトタイプ宣言ファイル
 
-+ `emit.c < emit.h` :  
++ `emitter.c < emitter.h` :  
 クラスファイルを生成するための関数実装ファイル
 
-+ `main.c < emit.h, y.tab.h` :  
+#./#
++ `main.c < emitter.h, y.tab.h` :  
 実際に各生成フェーズを実行するコンパイラのメインエントリポイント実装ファイル
 
 + `Test.desk` :  

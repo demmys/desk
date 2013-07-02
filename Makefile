@@ -3,11 +3,11 @@ CFLAGS = -Wall -O2
 
 TARGET = desk
 OBJS = \
-	   main.o\
 	   utils.o\
 	   compile.o\
 	   generate.o\
-	   emit.o
+	   emit.o\
+	   main.o
 MADE = $(TARGET)
 
 .SUFFIXES: .c .o
@@ -16,13 +16,18 @@ MADE = $(TARGET)
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-	cd utils; $(MAKE);
-	cd compile; $(MAKE);
-	cd generate; $(MAKE);
-	cd emit; $(MAKE);
 	$(CC) -o $@ $^
 
-.c.o:
+utils.o:
+	cd utils; $(MAKE);
+compile.o:
+	cd compile; $(MAKE);
+generate.o:
+	cd generate; $(MAKE);
+emit.o:
+	cd emit; $(MAKE);
+
+main.o: main.c emit/emitter.h compile/y.tab.c
 	$(CC) $(CFLAGS) -c -Iutils -Icompile -Igenerate -Iemit $<
 
 clean:
