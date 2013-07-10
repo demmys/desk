@@ -18,7 +18,7 @@ char *attribute_name[] = {
 static AttributeInfo *add_attribute_info(AttributeInfo **ai_list, u2 *list_length, AttributeTag tag){
     AttributeInfo *ai;
 
-    /* add attributes */
+    /* add attribute */
     if(*ai_list){
         ai = classfile_storage_malloc(sizeof(AttributeInfo));
         ai->next = NULL;
@@ -46,4 +46,20 @@ void add_attribute_source_file_info(AttributeInfo **ai_list, u2 *list_length, ch
     ai = add_attribute_info(ai_list, list_length, ATTRIBUTE_SourceFile);
     ai->attribute_length = 2;
     ai->u.cp_index = add_constant_utf8_info(source_file);
+}
+
+static u4 generate_attribute_code(AttributeInfo *ai, Statement *st){
+    u4 length;
+
+    length = 12;
+    ai->u.code_attribute.exception_table_length = 0;
+    ai->u.code_attribute.exception_table = NULL;
+    return length;
+}
+
+void add_attribute_code(AttributeInfo **ai_list, u2 *list_length, Statement *st){
+    AttributeInfo *ai;
+
+    ai = add_attribute_info(ai_list, list_length, ATTRIBUTE_Code);
+    ai->attribute_length = generate_attribute_code(ai, st);
 }

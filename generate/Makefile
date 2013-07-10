@@ -4,7 +4,9 @@ CFLAGS = -Wall -O2
 TARGET = ../generate.o
 OBJS = \
 	   classfile_constant_pool.o\
+	   classfile_opcode.o\
 	   classfile_attributes.o\
+	   classfile_definition.o\
 	   classfile.o\
 	   generator.o
 MADE = $(TARGET)

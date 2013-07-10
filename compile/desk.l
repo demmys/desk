@@ -30,6 +30,7 @@ static void increment_line_number(){
     //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
 }
+    /*
 <INITIAL>"Float" {
     //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
@@ -38,6 +39,7 @@ static void increment_line_number(){
     //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
 }
+    */
 
 <INITIAL>[a-z][A-Za-z_0-9]* {
     //yylval.identifier = create_identifier(yytext);
@@ -59,6 +61,7 @@ static void increment_line_number(){
     yylval.expression = expression;
     return INT_LITERAL;
 }
+    /*
 <INITIAL>[0-9]+\.[0-9]* {
     Expression *expression = alloc_expression(FLOAT_EXPRESSION);
     sscanf(yytext, "%lf", &expression -> u.float_value);
@@ -71,6 +74,7 @@ static void increment_line_number(){
     yylval.expression = expression;
     return CHAR_LITERAL;
 }
+    */
 
 <INITIAL>[ \t] ;
 <INITIAL>\n increment_line_number();

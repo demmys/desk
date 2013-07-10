@@ -119,6 +119,8 @@ primary_expression
         $$ = $2;
     }
     | INT_LITERAL
+    /*
     | FLOAT_LITERAL
     | CHAR_LITERAL;
+    */
 %%

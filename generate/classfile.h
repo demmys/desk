@@ -3,7 +3,7 @@
 #include "storage.h"
 #include "error.h"
 #include "classfile_constant_pool.h"
-#include "classfile_attributes.h"
+#include "classfile_definition.h"
 
 /*
  * enumerated type
@@ -24,17 +24,6 @@ typedef enum{
 /*
  * struct declaration
  */
-typedef struct Definition_tag Definition;
-struct Definition_tag{
-    u2 access_flags;
-    u2 name_index;
-    u2 descriptor_index;
-    u2 attributes_count;
-    AttributeInfo *attributes;
-    Definition *prev;
-    Definition *next;
-};
-
 typedef struct {
     u4 magic;
     u2 minor_version;

@@ -1,6 +1,7 @@
 #ifndef CLASSFILE_ATTRIBUTES_H_INCLUDED
 #define CLASSFILE_ATTRIBUTES_H_INCLUDED
-#include "classfile_base.h" 
+#include "compiler.h"
+#include "classfile_opcode.h"
 
 /*
  * enumerated type
@@ -116,8 +117,14 @@ struct AttributeInfo_tag{
 };
 
 /*
+ * extern
+ */
+extern char *attribute_name[];
+
+/*
  * classfile_attributes.c function prototype
  */
 void add_attribute_source_file_info(AttributeInfo **ai_list, u2 *list_length, char *source_file);
+void add_attribute_code(AttributeInfo **ai_list, u2 *list_length, Statement *st);
 
 #endif // CLASSFILE_ATTRIBUTES_H_INCLUDED
