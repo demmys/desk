@@ -40,6 +40,7 @@ definition
 main_definition
     : MAIN BOUND statement {
         main_define($3);
+        constructor_define();
     };
 
 /*

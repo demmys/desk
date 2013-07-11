@@ -13,7 +13,7 @@ typedef enum{
 } BasicType;
 
 typedef enum{
-    INT_EXPRESSION = 1,
+    INT_EXPRESSION,
     FLOAT_EXPRESSION,
     CHAR_EXPRESSION,
     ADD_EXPRESSION,
@@ -21,13 +21,13 @@ typedef enum{
     MUL_EXPRESSION,
     DIV_EXPRESSION,
     MOD_EXPRESSION,
-    MINUS_EXPRESSION,
-    EXPRESSION_KIND_COUNT_PLUS_1
+    MINUS_EXPRESSION
 } ExpressionKind;
 
 typedef enum{
-    EXPRESSION_STATEMENT = 1,
-    STATEMENT_TYPE_COUNT_PLUS_1
+    CONSTRUCTOR_STATEMENT,
+    EXPRESSION_STATEMENT,
+    IF_STATEMENT
 } StatementType;
 
 /*
@@ -39,6 +39,7 @@ typedef struct Statement_tag Statement;
 typedef struct{
     //int function_count;
     Statement *main_statement; // FunctionList *function_list;
+    Statement *constructor_statement;
     int current_line_number;
     //InputMode input_mode;
     //Encoding source_encoding;
@@ -67,6 +68,7 @@ struct Statement_tag{
     StatementType type;
     int line_number;
     union{
+        u1 constructor;
         Expression *expression_s;
     } u;
 };

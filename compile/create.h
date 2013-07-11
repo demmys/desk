@@ -7,6 +7,7 @@
  * create.c function prototype
  */
 Expression* alloc_expression(ExpressionKind kind);
+void constructor_define();
 void main_define(Statement *statement);
 Statement *create_expression_statement(Expression *expression);
 Expression *create_binary_expression(ExpressionKind operator, Expression *left, Expression *right);

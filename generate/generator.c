@@ -28,7 +28,7 @@ static int format_name(char *file_name){
     return -1;
 }
 
-static void init_class_file(char *source_file, char *super_class){
+static void generate_class_information(char *source_file, char *super_class){
     ClassFile *cf;
     char *class_name, *emit_name;
     int class_name_length, i;
@@ -53,19 +53,24 @@ static void init_class_file(char *source_file, char *super_class){
     cf->emit_file = emit_name;
 }
 
+// TODO
+static void generate_method(char *name, char *type, Statement *st){
+    ClassFile *cf;
+    Definition *dn;
+
+    cf = get_current_classfile();
+    dn = add_definition(&(cf->methods), &(cf->methods_count), name, type);
+    add_attribute_code(&(dn->attributes), &(dn->attributes_count), st);
+}
+
 ClassFile *generate(Compiler *compiler){
     ClassFile *cf;
 
     cf = create_class_file();
-    init_class_file(compiler->source_file, "java/lang/Object");
-    add_definition(&(cf->methods), &(cf->methods_count), "<init>", "()V");
-    add_definition(&(cf->methods), &(cf->methods_count), "main", "([Ljava/lang/String:)V");
-    //TODO set constructor in specific method(set constructor method method)
-    add_constant_utf8_info(attribute_name[ATTRIBUTE_Code]);
-    add_constant_utf8_info(attribute_name[ATTRIBUTE_LineNumberTable]);
-    add_constant_method_info("java/lang/Object", "<init>", "()V");
-    add_constant_utf8_info("main");
-    add_constant_utf8_info("([Ljava/lang/String;)V");
+    generate_class_information(compiler->source_file, "java/lang/Object");
+    generate_method("<init>", "()V", compiler->constructor_statement);
+    generate_method("main", "([Ljava/lang/String:)V", compiler->main_statement);
+    //add_constant_utf8_info(attribute_name[ATTRIBUTE_LineNumberTable]);
 
     //TODO test
     //test_constant_pool();

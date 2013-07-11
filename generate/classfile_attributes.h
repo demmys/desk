@@ -1,7 +1,7 @@
 #ifndef CLASSFILE_ATTRIBUTES_H_INCLUDED
 #define CLASSFILE_ATTRIBUTES_H_INCLUDED
 #include "compiler.h"
-#include "classfile_opcode.h"
+#include "opcode.h"
 
 /*
  * enumerated type
@@ -75,7 +75,11 @@ typedef struct{
 
 typedef struct Code_tag Code;
 struct Code_tag{
-    u1 code;
+    union{
+        OpcodeInfo *opcode;
+        u1 operand_u1;
+        u2 operand_u2;
+    } u;
     Code *prev;
     Code *next;
 };

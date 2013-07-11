@@ -12,6 +12,7 @@ Expression* alloc_expression(ExpressionKind kind){
     exp->line_number = get_current_compiler()->current_line_number;
     return exp;
 }
+
 static Statement* alloc_statement(StatementType type){
     Statement *st;
 
@@ -24,6 +25,15 @@ static Statement* alloc_statement(StatementType type){
 /*
  * define methods
  */
+void constructor_define(){
+    Compiler *compiler;
+    Statement *st;
+
+    compiler = get_current_compiler();
+    compiler->constructor_statement = alloc_statement(CONSTRUCTOR_STATEMENT);
+    compiler->constructor_statement->u.constructor = 0;
+}
+
 void main_define(Statement *statement){
     Compiler *compiler;
 
@@ -44,6 +54,7 @@ Statement *create_expression_statement(Expression *expression){
     st->u.expression_s = expression;
     return st;
 }
+
 Expression *create_binary_expression(ExpressionKind operator, Expression *left, Expression *right){
     Expression *exp;
 
@@ -52,6 +63,7 @@ Expression *create_binary_expression(ExpressionKind operator, Expression *left, 
     exp->u.binary_expression.right = right;
     return exp;
 }
+
 Expression *create_minus_expression(Expression *operand){
     Expression *exp;
 
