@@ -5,6 +5,6 @@
 /*
  * emit.c function prototype
  */
-void emit();
+void emit(ClassFile *cf);
 
 #endif //  EMIT_H_INCLUDED

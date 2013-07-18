@@ -53,7 +53,6 @@ static void generate_class_information(char *source_file, char *super_class){
     cf->emit_file = emit_name;
 }
 
-// TODO
 static void generate_method(char *name, char *type, Statement *st){
     ClassFile *cf;
     Definition *dn;

@@ -13,6 +13,8 @@ char *attribute_name[] = {
     "Deprecated"
 };
 
+static void generate_expression_code(CodeAttribute *ca, Expression *ex);
+
 // TODO implement calc attribute length function
 
 static AttributeInfo *add_attribute_info(AttributeInfo **ai_list, u2 *list_length, AttributeTag tag){
@@ -70,6 +72,8 @@ static void add_code(CodeAttribute *ca, Opcode op, ...){
     }
     c->tag = CODE_OPCODE;
     c->u.opcode = oi;
+    ca->max_stack += oi->max_stack;
+    ca->max_locals += oi->max_locals;
     ca->code_length++;
 
     /* add operand */
@@ -102,6 +106,88 @@ static void generate_constructor_code(CodeAttribute *ca){
     add_code(ca, RETURN);
 }
 
+static void generate_int_expression(CodeAttribute *ca, int value){
+    switch(value){
+        case 0:
+            add_code(ca, ICONST_0);
+            return;
+            break;
+        case 1:
+            add_code(ca, ICONST_1);
+            return;
+            break;
+        case 2:
+            add_code(ca, ICONST_2);
+            return;
+            break;
+        case 3:
+            add_code(ca, ICONST_3);
+            return;
+            break;
+        case 4:
+            add_code(ca, ICONST_4);
+            return;
+            break;
+        case 5:
+            add_code(ca, ICONST_5);
+            return;
+            break;
+    }
+    if(-128 <= value && value < 128)
+        add_code(ca, BIPUSH);
+    else if(-32768 <= value && value < 32768)
+        add_code(ca, SIPUSH);
+    else{
+        // TODO ldc
+    }
+}
+
+static void generate_binary_expression(CodeAttribute *ca, BinaryExpression be){
+    generate_expression_code(ca, be.left);
+    generate_expression_code(ca, be.right);
+    switch(be.kind){
+        case ADD_OPERATOR:
+            add_code(ca, IADD);
+            break;
+        case SUB_OPERATOR:
+            add_code(ca, ISUB);
+            break;
+        case MUL_OPERATOR:
+            add_code(ca, IMUL);
+            break;
+        case DIV_OPERATOR:
+            add_code(ca, IDIV);
+            break;
+        case MOD_OPERATOR:
+            add_code(ca, IREM);
+    }
+}
+
+static void generate_minus_expression(CodeAttribute *ca, Expression *me){
+    generate_expression_code(ca, me);
+    add_code(ca, INEG);
+}
+
+static void generate_expression_code(CodeAttribute *ca, Expression *ex){
+    switch(ex->kind){
+        case INT_EXPRESSION:
+            generate_int_expression(ca, ex->u.int_value);
+            break;
+        case BINARY_EXPRESSION:
+            generate_binary_expression(ca, ex->u.binary_expression);
+            break;
+        case MINUS_EXPRESSION:
+            generate_minus_expression(ca, ex->u.minus_expression);
+    }
+}
+
+static void generate_main_code(CodeAttribute *ca, Expression *ex){
+    add_code(ca, GETSTATIC, add_constant_field_info("java/lang/System", "out", "Ljava/io/PrintStream;"));
+    generate_expression_code(ca, ex);
+    add_code(ca, INVOKEVIRTUAL, add_constant_method_info("java/io/PrintStream", "println", "(I)V"));
+    add_code(ca, RETURN);
+}
+
 static u4 create_attribute_code(CodeAttribute *ca, Statement *st){
     u4 length;
 
@@ -116,7 +202,11 @@ static u4 create_attribute_code(CodeAttribute *ca, Statement *st){
         case CONSTRUCTOR_STATEMENT:
             generate_constructor_code(ca);
             break;
+        case MAIN_STATEMENT:
+            generate_main_code(ca, st->u.expression);
+            break;
         case EXPRESSION_STATEMENT:
+            generate_expression_code(ca, st->u.expression);
             break;
         default:
             break;

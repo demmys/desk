@@ -22,6 +22,8 @@ typedef enum{
     ICONST_3,
     ICONST_4,
     ICONST_5,
+    BIPUSH,
+    SIPUSH,
     LDC,
     LDC_W,
     ILOAD,

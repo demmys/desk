@@ -7,7 +7,6 @@ Expression* alloc_expression(ExpressionKind kind){
     Expression *exp;
  
     exp = compiler_storage_malloc(sizeof(Expression));
-    exp->type = 0;
     exp->kind = kind;
     exp->line_number = get_current_compiler()->current_line_number;
     return exp;
@@ -37,10 +36,13 @@ void main_define(Statement *statement){
     Compiler *compiler;
 
     compiler = get_current_compiler();
-    if(compiler->main_statement)
+    if(compiler->main_statement){
         compile_error(ERROR_MAIN_ALREADY_DEFINED, statement->line_number);
-    else
+    }
+    else{
+        statement->type = MAIN_STATEMENT;
         compiler->main_statement = statement;
+    }
 }
 
 /*
@@ -50,14 +52,15 @@ Statement *create_expression_statement(Expression *expression){
     Statement *st;
 
     st = alloc_statement(EXPRESSION_STATEMENT);
-    st->u.expression_s = expression;
+    st->u.expression = expression;
     return st;
 }
 
-Expression *create_binary_expression(ExpressionKind operator, Expression *left, Expression *right){
+Expression *create_binary_expression(OperatorKind operator, Expression *left, Expression *right){
     Expression *exp;
 
-    exp = alloc_expression(operator);
+    exp = alloc_expression(BINARY_EXPRESSION);
+    exp->u.binary_expression.kind = operator;
     exp->u.binary_expression.left = left;
     exp->u.binary_expression.right = right;
     return exp;

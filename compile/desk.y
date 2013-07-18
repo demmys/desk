@@ -88,22 +88,22 @@ expression
 add_expression
     : mul_expression
     | add_expression ADD mul_expression {
-        $$ = create_binary_expression(ADD_EXPRESSION, $1, $3);
+        $$ = create_binary_expression(ADD_OPERATOR, $1, $3);
     }
     | add_expression SUB mul_expression {
-        $$ = create_binary_expression(SUB_EXPRESSION, $1, $3);
+        $$ = create_binary_expression(SUB_OPERATOR, $1, $3);
     };
 
 mul_expression
     : unary_expression
     | mul_expression MUL unary_expression {
-        $$ = create_binary_expression(MUL_EXPRESSION, $1, $3);
+        $$ = create_binary_expression(MUL_OPERATOR, $1, $3);
     }
     | mul_expression DIV unary_expression {
-        $$ = create_binary_expression(DIV_EXPRESSION, $1, $3);
+        $$ = create_binary_expression(DIV_OPERATOR, $1, $3);
     }
     | mul_expression MOD unary_expression {
-        $$ = create_binary_expression(MOD_EXPRESSION, $1, $3);
+        $$ = create_binary_expression(MOD_OPERATOR, $1, $3);
     };
 
 unary_expression

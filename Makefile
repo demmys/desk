@@ -57,6 +57,9 @@ ls:
 	@cd emit; ls;
 	@echo ""
 
+wc:
+	wc main.c compile/*.c compile/*.h compile/desk.* generate/*.c generate/*.h utils/*c utils/*.h emit/*.c emit/*.h
+
 help:
 	@echo "USAGE: make [options]"
 	@echo "OPTIONS:"

@@ -6,25 +6,32 @@
 /*
  * enumerated type
  */
+/*
 typedef enum{
     INT_TYPE,
     FLOAT_TYPE,
     CHAR_TYPE
 } BasicType;
+*/
+
+typedef enum{
+    ADD_OPERATOR,
+    SUB_OPERATOR,
+    MUL_OPERATOR,
+    DIV_OPERATOR,
+    MOD_OPERATOR
+} OperatorKind;
 
 typedef enum{
     INT_EXPRESSION,
-    FLOAT_EXPRESSION,
-    CHAR_EXPRESSION,
-    ADD_EXPRESSION,
-    SUB_EXPRESSION,
-    MUL_EXPRESSION,
-    DIV_EXPRESSION,
-    MOD_EXPRESSION,
+    /*FLOAT_EXPRESSION,
+    CHAR_EXPRESSION,*/
+    BINARY_EXPRESSION,
     MINUS_EXPRESSION
 } ExpressionKind;
 
 typedef enum{
+    MAIN_STATEMENT,
     CONSTRUCTOR_STATEMENT,
     EXPRESSION_STATEMENT,
     IF_STATEMENT
@@ -48,17 +55,18 @@ typedef struct{
 }Compiler;
 
 typedef struct {
+    OperatorKind kind;
     Expression  *left;
     Expression  *right;
 } BinaryExpression;
 struct Expression_tag{
-    BasicType type; // TypeSpecifier *type;
+    //BasicType type; // TypeSpecifier *type;
     ExpressionKind kind;
     int line_number;
     union{
         int int_value;
-        double float_value;
-        char char_value;
+        /*double float_value;
+        char char_value;*/
         BinaryExpression binary_expression;
         Expression *minus_expression;
     } u;
@@ -69,7 +77,7 @@ struct Statement_tag{
     int line_number;
     union{
         int constructor;
-        Expression *expression_s;
+        Expression *expression;
     } u;
 };
 

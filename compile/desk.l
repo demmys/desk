@@ -22,15 +22,17 @@ static void increment_line_number(){
 <INITIAL>")" return RP;
 <INITIAL>"=" return BOUND;
 <INITIAL>";" return SEMICOLON;
+    /*
 <INITIAL>"::" return DEF;
 <INITIAL>"->" return IMPL;
+    */
 <INITIAL>"main" return MAIN;
 
+    /*
 <INITIAL>"Int" {
     //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
 }
-    /*
 <INITIAL>"Float" {
     //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
@@ -45,10 +47,12 @@ static void increment_line_number(){
     //yylval.identifier = create_identifier(yytext);
     return IDENTIFIER;
 }
+    /*
 <INITIAL>[A-Z][A-Za-z_0-9]* {
     //yylval.identifier = create_type_identifier(yytext);
     return TYPE_IDENTIFIER;
 }
+    */
 <INITIAL>[1-9][0-9]* {
     Expression *expression = alloc_expression(INT_EXPRESSION);
     sscanf(yytext, "%d", &expression -> u.int_value);
