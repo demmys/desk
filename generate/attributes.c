@@ -89,11 +89,13 @@ static void add_code(CodeAttribute *ca, Opcode op, ...){
             case 'b':
                 c->tag = CODE_OPERAND_BYTE;
                 c->u.operand_byte = va_arg(args, int);
+                printf("b: %d\n", c->u.operand_byte);
                 ca->code_length++;
                 break;
-            case 'l':
-                c->tag = CODE_OPERAND_LONG_BYTE;
-                c->u.operand_long_byte = va_arg(args, int);
+            case 's':
+                c->tag = CODE_OPERAND_SHORT;
+                c->u.operand_short = va_arg(args, int);
+                printf("l: %d\n", c->u.operand_short);
                 ca->code_length += 2;
         }
     }

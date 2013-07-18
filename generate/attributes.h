@@ -21,7 +21,7 @@ typedef enum{
 typedef enum{
     CODE_OPCODE,
     CODE_OPERAND_BYTE,
-    CODE_OPERAND_LONG_BYTE
+    CODE_OPERAND_SHORT
 } CodeTag;
 
 /*
@@ -85,7 +85,7 @@ struct Code_tag{
     union{
         OpcodeInfo *opcode;
         u1 operand_byte;
-        u2 operand_long_byte;
+        u2 operand_short;
     } u;
     Code *prev;
     Code *next;

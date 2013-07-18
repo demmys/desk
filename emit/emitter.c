@@ -1,5 +1,7 @@
 #include "emitter.h"
 
+static void emit_attributes(AttributeInfo *ai, u2 *count);
+
 static FILE *fp;
 
 static void emit_class_file(void *p, size_t size){
@@ -47,7 +49,7 @@ static void emit_constant_pool(ConstantInfo *ci, u2 *count){
             case CONSTANT_InterfaceMethodref:
                 swap16(&(ci->u.reference_info.class_index));
                 swap16(&(ci->u.reference_info.name_and_type_index));
-                emit_class_file(&(ci->u.reference_info), 4)
+                emit_class_file(&(ci->u.reference_info), 4);
                 break;
             case CONSTANT_NameAndType:
                 swap16(&(ci->u.name_and_type_info.name_index));
@@ -84,26 +86,53 @@ static void emit_middles(ClassFile *cf){
 }
 
 static void emit_definitions(Definition *mi, u2 *count){
-    // TODO test
-    *count = 0;
+    /* definition length */
     swap16(count);
     emit_class_file(count, 2);
     
-    // TODO emit methods
+    /* definitions */
+    while(mi){
+        swap16(&(mi->access_flags));
+        swap16(&(mi->name_index));
+        swap16(&(mi->descriptor_index));
+        emit_class_file(mi, 6);
+        emit_attributes(mi->attributes, &(mi->attributes_count));
+        mi = mi->next;
+    }
+}
+
+static void emit_codes(Code *c){
+    while(c){
+        switch(c->tag){
+            case CODE_OPERAND_BYTE:
+                emit_class_file(&(c->u.operand_byte), 1);
+                break;
+            case CODE_OPERAND_SHORT:
+                swap16(&(c->u.operand_short));
+                emit_class_file(&(c->u.operand_short), 2);
+                break;
+            case CODE_OPCODE:
+                emit_class_file(&(c->u.opcode->byte), 1);
+        }
+        c = c->next;
+    }
 }
 
 static void emit_code_attribute(CodeAttribute *ca){
     swap16(&(ca->max_stack));
     swap16(&(ca->max_locals));
     swap32(&(ca->code_length));
+    emit_class_file(ca, 8);
+
+    emit_codes(ca->code);
+
     swap16(&(ca->exception_table_length));
     emit_class_file(&(ca->exception_table_length), 2);
+
     emit_attributes(ca->attributes, &(ca->attributes_count));
 }
 
 static void emit_attributes(AttributeInfo *ai, u2 *count){
-    u2 len;
-
     /* attributes length */
     swap16(count);
     emit_class_file(count, 2);
@@ -115,9 +144,9 @@ static void emit_attributes(AttributeInfo *ai, u2 *count){
         emit_class_file(&(ai->attribute_name_index), 6);
         switch(ai->tag){
             case ATTRIBUTE_Code:
-                emit_code_attribute(ai->u.code_attribute);
+                emit_code_attribute(&(ai->u.code_attribute));
                 break;
-            case CONSTANT_ConstantValue:
+            case ATTRIBUTE_ConstantValue:
             case ATTRIBUTE_SourceFile:
                 swap16(&(ai->u.cp_index));
                 emit_class_file(&(ai->u.cp_index), 2);
