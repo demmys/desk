@@ -4,8 +4,8 @@ static void emit_attributes(AttributeInfo *ai, u2 *count);
 
 static FILE *fp;
 
-static void emit_class_file(void *p, size_t size){
-    fwrite(p, sizeof(u1), size, fp);
+static void emit_class_file(void *p, size_t length){
+    fwrite(p, sizeof(u1), length, fp);
 }
 
 static void swap16(u2 *value){
@@ -60,7 +60,7 @@ static void emit_constant_pool(ConstantInfo *ci, u2 *count){
                 len = ci->u.utf8_info.length;
                 swap16(&(ci->u.utf8_info.length));
                 emit_class_file(&(ci->u.utf8_info.length), 2);
-                emit_class_file(&(ci->u.utf8_info.value), len);
+                emit_class_file(ci->u.utf8_info.value, len);
                 break;
             case CONSTANT_String:
             case CONSTANT_Integer:
