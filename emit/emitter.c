@@ -60,7 +60,7 @@ static void emit_constant_pool(ConstantInfo *ci, u2 *count){
                 len = ci->u.utf8_info.length;
                 swap16(&(ci->u.utf8_info.length));
                 emit_class_file(&(ci->u.utf8_info.length), 2);
-                emit_class_file(ci->u.utf8_info.value, len);
+                emit_class_file((void *)ci->u.utf8_info.value, len);
                 break;
             case CONSTANT_String:
             case CONSTANT_Integer:
@@ -141,7 +141,8 @@ static void emit_attributes(AttributeInfo *ai, u2 *count){
     while(ai){
         swap16(&(ai->attribute_name_index));
         swap32(&(ai->attribute_length));
-        emit_class_file(&(ai->attribute_name_index), 6);
+        emit_class_file(&(ai->attribute_name_index), 2);
+        emit_class_file(&(ai->attribute_length), 4);
         switch(ai->tag){
             case ATTRIBUTE_Code:
                 emit_code_attribute(&(ai->u.code_attribute));

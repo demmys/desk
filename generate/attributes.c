@@ -191,9 +191,6 @@ static void generate_main_code(CodeAttribute *ca, Expression *ex){
 }
 
 static u4 create_attribute_code(CodeAttribute *ca, Statement *st){
-    u4 length;
-
-    length = 12;
     ca->max_stack = 0;
     ca->max_locals = 1;
     ca->code_length = 0;
@@ -214,7 +211,7 @@ static u4 create_attribute_code(CodeAttribute *ca, Statement *st){
             break;
     }
 
-    return length;
+    return 12 + ca->code_length;
 }
 
 void add_attribute_code(AttributeInfo **ai_list, u2 *list_length, Statement *st){

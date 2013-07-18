@@ -64,7 +64,7 @@ struct Expression_tag{
     ExpressionKind kind;
     int line_number;
     union{
-        int int_value;
+        unsigned int int_value;
         /*double float_value;
         char char_value;*/
         BinaryExpression binary_expression;

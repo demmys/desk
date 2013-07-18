@@ -55,7 +55,7 @@ static void increment_line_number(){
     */
 <INITIAL>[1-9][0-9]* {
     Expression *expression = alloc_expression(INT_EXPRESSION);
-    sscanf(yytext, "%d", &expression -> u.int_value);
+    sscanf(yytext, "%d", &(expression->u.int_value));
     yylval.expression = expression;
     return INT_LITERAL;
 }
