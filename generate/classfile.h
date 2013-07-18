@@ -2,8 +2,8 @@
 #define CLASSFILE_H_INCLUDED
 #include "storage.h"
 #include "error.h"
-#include "classfile_constant_pool.h"
-#include "classfile_definition.h"
+#include "constant_pool.h"
+#include "definition.h"
 
 /*
  * enumerated type

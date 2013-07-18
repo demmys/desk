@@ -1,6 +1,6 @@
 #ifndef CLASSFILE_DEFINITION_H_INCLUDED
 #define CLASSFILE_DEFINITION_H_INCLUDED
-#include "classfile_attributes.h"
+#include "attributes.h"
 
 /*
  * struct declaration

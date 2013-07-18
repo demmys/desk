@@ -3,10 +3,10 @@ CFLAGS = -Wall -O2
 
 TARGET = ../generate.o
 OBJS = \
-	   classfile_constant_pool.o\
-	   classfile_opcode.o\
-	   classfile_attributes.o\
-	   classfile_definition.o\
+	   constant_pool.o\
+	   opcode.o\
+	   attributes.o\
+	   definition.o\
 	   classfile.o\
 	   generator.o
 MADE = $(TARGET)
@@ -22,7 +22,7 @@ $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -I../compile -I../utils -c $<
 
 generator.o: classfile.h
-classfile.o: classfile.h classfile_constant_pool.h classfile_attributes.c classfile_base.h
+classfile.o: classfile.h constant_pool.h attributes.c base.h
 
 clean:
 	rm -f $(OBJS)

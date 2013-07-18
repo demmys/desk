@@ -18,6 +18,12 @@ typedef enum{
     ATTRIBUTE_Deprecated //ClassFile, FieldInfo, MethodInfo
 } AttributeTag;
 
+typedef enum{
+    CODE_OPCODE,
+    CODE_OPERAND_BYTE,
+    CODE_OPERAND_LONG_BYTE
+} CodeTag;
+
 /*
  * struct declaration
  */
@@ -75,10 +81,11 @@ typedef struct{
 
 typedef struct Code_tag Code;
 struct Code_tag{
+    CodeTag tag;
     union{
         OpcodeInfo *opcode;
-        u1 operand_u1;
-        u2 operand_u2;
+        u1 operand_byte;
+        u2 operand_long_byte;
     } u;
     Code *prev;
     Code *next;

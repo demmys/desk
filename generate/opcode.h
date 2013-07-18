@@ -1,6 +1,6 @@
 #ifndef CODE_H_INCLUDED
 #define CODE_H_INCLUDED
-#include "classfile_base.h"
+#include "base.h"
 
 /*
  * struct

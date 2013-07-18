@@ -1,6 +1,6 @@
 #ifndef CLASSFILE_CONSTANT_POOL_H_INCLUDED
 #define CLASSFILE_CONSTANT_POOL_H_INCLUDED
-#include "classfile_base.h"
+#include "base.h"
 
 /*
  * enumerated type

@@ -54,26 +54,40 @@ static void add_(CodeAttribute *ca, Opcode op, ...){
     va_list args;
     int i;
 
-    /* add code */
+    /* add opcode */
     oi = &(opcode_table[op]);
+    if(ca->code){
+        c = classfile_storage_malloc(sizeof(Code));
+        c->next = NULL;
+        c->prev = ca->code->prev;
+        c->prev->next = c;
+        ca->code->prev = c;
+    } else{
+        ca->code = classfile_storage_malloc(sizeof(Code));
+        ca->code->next = NULL;
+        ca->code->prev = ca->code;
+        c = ca->code;
+    }
+    c->tag = CODE_OPCODE;
+    c->u.opcode = oi;
+
+    /* add operand */
     va_start(args, op);
-    for(i = 0; i <= oi->operand_count; i++){
-        if(ca->code){
-            c = classfile_storage_malloc(sizeof(Code));
-            c->next = NULL;
-            c->prev = ca->code->prev;
-            c->prev->next = c;
-            ca->code->prev = c;
-        } else{
-            ca->code = classfile_storage_malloc(sizeof(Code));
-            ca->code->next = NULL;
-            ca->code->prev = ca->code;
-            c = ca->code;
-        }
-        if(i){
-            c->u.operand = va_arg(args, int);
-        } else{
-            c->u.opcode = oi;
+    for(i = 0; i < oi->operand_count; i++){
+        c = classfile_storage_malloc(sizeof(Code));
+        c->next = NULL;
+        c->prev = ca->code->prev;
+        c->prev->next = c;
+        ca->code->prev = c;
+
+        switch(oi->operands_type[i]){
+            case 'b':
+                c->tag = CODE_OPERAND_BYTE;
+                c->u.operand_byte = va_arg(args, int);
+                break;
+            case 'l':
+                c->tag = CODE_OPERAND_LONG_BYTE;
+                c->u.operand_long_byte = va_arg(args, int);
         }
     }
     va_end(args);
@@ -87,8 +101,7 @@ static void generate_constructor_code(CodeAttribute *ca){
     u2 method_index;
 
     add_code(ca, ALOAD_0);
-    method_index = add_constant_method_info("java/lang/Object", "<init>", "()V");
-    add_code(ca, INVOKESPECIAL, );
+    add_code(ca, INVOKESPECIAL, add_constant_method_info("java/lang/Object", "<init>", "()V"));
     add_code(ca, RETURN);
 }
 
