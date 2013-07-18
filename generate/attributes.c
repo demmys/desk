@@ -48,7 +48,7 @@ void add_attribute_source_file_info(AttributeInfo **ai_list, u2 *list_length, ch
     ai->u.cp_index = add_constant_utf8_info(source_file);
 }
 
-static void add_(CodeAttribute *ca, Opcode op, ...){
+static void add_code(CodeAttribute *ca, Opcode op, ...){
     OpcodeInfo *oi;
     Code *c;
     va_list args;
@@ -70,6 +70,7 @@ static void add_(CodeAttribute *ca, Opcode op, ...){
     }
     c->tag = CODE_OPCODE;
     c->u.opcode = oi;
+    ca->code_length++;
 
     /* add operand */
     va_start(args, op);
@@ -84,22 +85,18 @@ static void add_(CodeAttribute *ca, Opcode op, ...){
             case 'b':
                 c->tag = CODE_OPERAND_BYTE;
                 c->u.operand_byte = va_arg(args, int);
+                ca->code_length++;
                 break;
             case 'l':
                 c->tag = CODE_OPERAND_LONG_BYTE;
                 c->u.operand_long_byte = va_arg(args, int);
+                ca->code_length += 2;
         }
     }
     va_end(args);
-
-    /* set value to new code */
-    ca->code_length++;
-    ca->code_length += c->opcode->operand_count;
 }
 
 static void generate_constructor_code(CodeAttribute *ca){
-    u2 method_index;
-
     add_code(ca, ALOAD_0);
     add_code(ca, INVOKESPECIAL, add_constant_method_info("java/lang/Object", "<init>", "()V"));
     add_code(ca, RETURN);
@@ -120,6 +117,8 @@ static u4 create_attribute_code(CodeAttribute *ca, Statement *st){
             generate_constructor_code(ca);
             break;
         case EXPRESSION_STATEMENT:
+            break;
+        default:
             break;
     }
 

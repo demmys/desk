@@ -68,7 +68,7 @@ struct Statement_tag{
     StatementType type;
     int line_number;
     union{
-        u1 constructor;
+        int constructor;
         Expression *expression_s;
     } u;
 };

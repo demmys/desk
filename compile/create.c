@@ -27,7 +27,6 @@ static Statement* alloc_statement(StatementType type){
  */
 void constructor_define(){
     Compiler *compiler;
-    Statement *st;
 
     compiler = get_current_compiler();
     compiler->constructor_statement = alloc_statement(CONSTRUCTOR_STATEMENT);
