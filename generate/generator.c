@@ -53,22 +53,25 @@ static void generate_class_information(char *source_file, char *super_class){
     cf->emit_file = emit_name;
 }
 
-static void generate_method(char *name, char *type, Statement *st){
+static Definition *generate_method(char *name, char *type, Statement *st){
     ClassFile *cf;
     Definition *dn;
 
     cf = get_current_classfile();
     dn = add_definition(&(cf->methods), &(cf->methods_count), name, type);
     add_attribute_code(&(dn->attributes), &(dn->attributes_count), st);
+    return dn;
 }
 
 ClassFile *generate(Compiler *compiler){
     ClassFile *cf;
+    Definition *dn;
 
     cf = create_class_file();
     generate_class_information(compiler->source_file, "java/lang/Object");
     generate_method("<init>", "()V", compiler->constructor_statement);
-    generate_method("main", "([Ljava/lang/String:)V", compiler->main_statement);
+    dn = generate_method("main", "([Ljava/lang/String;)V", compiler->main_statement);
+    dn->access_flags = dn->access_flags | ACC_STATIC;
     //add_constant_utf8_info(attribute_name[ATTRIBUTE_LineNumberTable]);
 
     //TODO test

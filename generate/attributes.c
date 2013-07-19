@@ -89,13 +89,11 @@ static void add_code(CodeAttribute *ca, Opcode op, ...){
             case 'b':
                 c->tag = CODE_OPERAND_BYTE;
                 c->u.operand_byte = va_arg(args, int);
-                printf("b: %d\n", c->u.operand_byte);
                 ca->code_length++;
                 break;
             case 's':
                 c->tag = CODE_OPERAND_SHORT;
                 c->u.operand_short = va_arg(args, int);
-                printf("l: %d\n", c->u.operand_short);
                 ca->code_length += 2;
         }
     }
@@ -136,9 +134,9 @@ static void generate_int_expression(CodeAttribute *ca, int value){
             break;
     }
     if(-128 <= value && value < 128)
-        add_code(ca, BIPUSH);
+        add_code(ca, BIPUSH, value);
     else if(-32768 <= value && value < 32768)
-        add_code(ca, SIPUSH);
+        add_code(ca, SIPUSH, value);
     else{
         // TODO ldc
     }
