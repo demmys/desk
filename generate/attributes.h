@@ -1,6 +1,7 @@
 #ifndef CLASSFILE_ATTRIBUTES_H_INCLUDED
 #define CLASSFILE_ATTRIBUTES_H_INCLUDED
-#include "classfile_base.h" 
+#include "compiler.h"
+#include "opcode.h"
 
 /*
  * enumerated type
@@ -16,6 +17,12 @@ typedef enum{
     ATTRIBUTE_LocalVariableTable, //Code
     ATTRIBUTE_Deprecated //ClassFile, FieldInfo, MethodInfo
 } AttributeTag;
+
+typedef enum{
+    CODE_OPCODE,
+    CODE_OPERAND_BYTE,
+    CODE_OPERAND_SHORT
+} CodeTag;
 
 /*
  * struct declaration
@@ -74,7 +81,12 @@ typedef struct{
 
 typedef struct Code_tag Code;
 struct Code_tag{
-    u1 code;
+    CodeTag tag;
+    union{
+        OpcodeInfo *opcode;
+        u1 operand_byte;
+        u2 operand_short;
+    } u;
     Code *prev;
     Code *next;
 };
@@ -116,8 +128,14 @@ struct AttributeInfo_tag{
 };
 
 /*
+ * extern
+ */
+extern char *attribute_name[];
+
+/*
  * classfile_attributes.c function prototype
  */
 void add_attribute_source_file_info(AttributeInfo **ai_list, u2 *list_length, char *source_file);
+void add_attribute_code(AttributeInfo **ai_list, u2 *list_length, Statement *st);
 
 #endif // CLASSFILE_ATTRIBUTES_H_INCLUDED

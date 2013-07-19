@@ -44,6 +44,22 @@ clear: clean
 	cd emit; $(MAKE) clear;
 	rm -f $(MADE)
 
+ls:
+	@echo "\n\033[0;31m./\033[0;39m"
+	@ls
+	@echo "\n\033[0;31mutils\033[0;39m"
+	@cd utils; ls;
+	@echo "\n\033[0;31mcompile\033[0;39m"
+	@cd compile; ls;
+	@echo "\n\033[0;31mgenerate\033[0;39m"
+	@cd generate; ls;
+	@echo "\n\033[0;31memit\033[0;39m"
+	@cd emit; ls;
+	@echo ""
+
+wc:
+	wc main.c compile/*.c compile/*.h compile/desk.* generate/*.c generate/*.h utils/*c utils/*.h emit/*.c emit/*.h
+
 help:
 	@echo "USAGE: make [options]"
 	@echo "OPTIONS:"

@@ -1,59 +1,66 @@
 #include "emitter.h"
 
-void swap16(u2 *value){
+static void emit_attributes(AttributeInfo *ai, u2 *count);
+
+static FILE *fp;
+
+static void emit_class_file(void *p, size_t length){
+    fwrite(p, sizeof(u1), length, fp);
+}
+
+static void swap16(u2 *value){
     u2 val = *value;
     *value = (val << 8) | ((val >> 8) & 0xff);
 }
 
-void swap32(u4 *value){
+static void swap32(u4 *value){
     u4 val = *value;
     *value = (val << 24) | ((val << 8) & 0xff0000) | ((val >> 8) & 0xff00) | ((val >> 24) & 0xff);
 }
 
-void emit_prefixes(FILE *fp){
-    ClassFile *cf;
-
-    cf = get_current_classfile();
+static void emit_prefixes(ClassFile *cf){
+    /* magic number */
     swap32(&(cf->magic));
+    /* viersion information */
     swap16(&(cf->minor_version));
     swap16(&(cf->major_version));
-    cf->constant_pool_count++;
-    swap16(&(cf->constant_pool_count));
 
-    fwrite(cf, sizeof(u1), 10, fp);
+    emit_class_file(cf, 8);
 }
 
-void emit_constant_pool(FILE *fp){
-    ClassFile *cf;
-    ConstantInfo *ci;
+static void emit_constant_pool(ConstantInfo *ci, u2 *count){
     u2 len;
 
-    cf = get_current_classfile();
-    for(ci = cf->constant_pool; ci; ci = ci->next){
-        u1 tag = ci->tag;
-        fwrite(&tag, sizeof(u1), 1, fp);
+    /* counstant pool length */
+    (*count)++;
+    swap16(count);
+    emit_class_file(count, 2);
+
+    /* constant pool */
+    while(ci){
+        emit_class_file(&(ci->tag), 1);
         switch(ci->tag){
             case CONSTANT_Class:
                 swap16(&(ci->u.cp_index));
-                fwrite(&(ci->u.cp_index), sizeof(u1), 2, fp);
+                emit_class_file(&(ci->u.cp_index), 2);
                 break;
             case CONSTANT_Fieldref:
             case CONSTANT_Methodref:
             case CONSTANT_InterfaceMethodref:
                 swap16(&(ci->u.reference_info.class_index));
                 swap16(&(ci->u.reference_info.name_and_type_index));
-                fwrite(&(ci->u.reference_info), sizeof(u1), 4, fp);
+                emit_class_file(&(ci->u.reference_info), 4);
                 break;
             case CONSTANT_NameAndType:
                 swap16(&(ci->u.name_and_type_info.name_index));
                 swap16(&(ci->u.name_and_type_info.descriptor_index));
-                fwrite(&(ci->u.name_and_type_info), sizeof(u1), 4, fp);
+                emit_class_file(&(ci->u.name_and_type_info), 4);
                 break;
             case CONSTANT_Utf8:
                 len = ci->u.utf8_info.length;
                 swap16(&(ci->u.utf8_info.length));
-                fwrite(&(ci->u.utf8_info.length), sizeof(u1), 2, fp);
-                fwrite(ci->u.utf8_info.value, sizeof(u1), len, fp);
+                emit_class_file(&(ci->u.utf8_info.length), 2);
+                emit_class_file((void *)ci->u.utf8_info.value, len);
                 break;
             case CONSTANT_String:
             case CONSTANT_Integer:
@@ -63,52 +70,108 @@ void emit_constant_pool(FILE *fp){
             default:
                 break;
         }
+        ci = ci->next;
     }
 }
 
-void emit_middles(FILE *fp){
-    ClassFile *cf;
-
-    cf = get_current_classfile();
+static void emit_middles(ClassFile *cf){
+    /* access flags */
     swap16(&(cf->access_flags));
+    /* this class information */
     swap16(&(cf->this_class_index));
+    /* super class information */
     swap16(&(cf->super_class_index));
-    swap16(&(cf->interfaces_count));
-    swap16(&(cf->fields_count));
-    swap16(&(cf->methods_count));
 
-    fwrite(&(cf->access_flags), sizeof(u1), 12, fp);
+    emit_class_file(&(cf->access_flags), 6);
 }
 
-void emit_attributes(FILE *fp){
-    ClassFile *cf;
-
-    cf = get_current_classfile();
-    swap16(&(cf->attributes_count));
-    swap16(&(cf->source_file->attribute_name_index));
-    swap32(&(cf->source_file->attribute_length));
-    swap16(&(cf->source_file->u.cp_index));
-
-    fwrite(&(cf->attributes_count), sizeof(u1), 2, fp);
-    fwrite(&(cf->source_file->attribute_name_index), sizeof(u1), 2, fp);
-    fwrite(&(cf->source_file->attribute_length), sizeof(u1), 4, fp);
-    fwrite(&(cf->source_file->u.cp_index), sizeof(u1), 2, fp);
+static void emit_definitions(Definition *mi, u2 *count){
+    /* definition length */
+    swap16(count);
+    emit_class_file(count, 2);
+    
+    /* definitions */
+    while(mi){
+        swap16(&(mi->access_flags));
+        swap16(&(mi->name_index));
+        swap16(&(mi->descriptor_index));
+        emit_class_file(mi, 6);
+        emit_attributes(mi->attributes, &(mi->attributes_count));
+        mi = mi->next;
+    }
 }
 
-void emit(){
-    FILE *fp;
-    ClassFile *cf;
+static void emit_codes(Code *c){
+    while(c){
+        switch(c->tag){
+            case CODE_OPERAND_BYTE:
+                emit_class_file(&(c->u.operand_byte), 1);
+                break;
+            case CODE_OPERAND_SHORT:
+                swap16(&(c->u.operand_short));
+                emit_class_file(&(c->u.operand_short), 2);
+                break;
+            case CODE_OPCODE:
+                emit_class_file(&(c->u.opcode->byte), 1);
+        }
+        c = c->next;
+    }
+}
 
-    cf = get_current_classfile();
+static void emit_code_attribute(CodeAttribute *ca){
+    swap16(&(ca->max_stack));
+    swap16(&(ca->max_locals));
+    swap32(&(ca->code_length));
+    emit_class_file(ca, 8);
+
+    emit_codes(ca->code);
+
+    swap16(&(ca->exception_table_length));
+    emit_class_file(&(ca->exception_table_length), 2);
+
+    emit_attributes(ca->attributes, &(ca->attributes_count));
+}
+
+static void emit_attributes(AttributeInfo *ai, u2 *count){
+    /* attributes length */
+    swap16(count);
+    emit_class_file(count, 2);
+
+    /* attributes */
+    while(ai){
+        swap16(&(ai->attribute_name_index));
+        swap32(&(ai->attribute_length));
+        emit_class_file(&(ai->attribute_name_index), 2);
+        emit_class_file(&(ai->attribute_length), 4);
+        switch(ai->tag){
+            case ATTRIBUTE_Code:
+                emit_code_attribute(&(ai->u.code_attribute));
+                break;
+            case ATTRIBUTE_ConstantValue:
+            case ATTRIBUTE_SourceFile:
+                swap16(&(ai->u.cp_index));
+                emit_class_file(&(ai->u.cp_index), 2);
+                break;
+            default:
+                break;
+        }
+        ai = ai->next;
+    }
+}
+
+void emit(ClassFile *cf){
     if(!(fp = fopen(cf->emit_file, "wb"))){
         fprintf(stderr, "system error!\n%d: class file \"%s\" could not create\n", 0, cf->emit_file);
         exit(1);
     }
 
-    emit_prefixes(fp);
-    emit_constant_pool(fp);
-    emit_middles(fp);
-    emit_attributes(fp);
+    emit_prefixes(cf);
+    emit_constant_pool(cf->constant_pool, &(cf->constant_pool_count));
+    emit_middles(cf);
+    emit_definitions(cf->interfaces, &(cf->interfaces_count));
+    emit_definitions(cf->fields, &(cf->fields_count));
+    emit_definitions(cf->methods, &(cf->methods_count));
+    emit_attributes(cf->source_file, &(cf->attributes_count));
 
     fclose(fp);
     printf("generated %s\n", cf->emit_file);
