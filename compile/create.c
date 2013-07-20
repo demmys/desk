@@ -32,7 +32,7 @@ void constructor_define(){
     compiler->constructor_statement->u.constructor = 0;
 }
 
-void main_define(Statement *statement){
+void main_define(char *parameter, Statement *statement){
     Compiler *compiler;
 
     compiler = get_current_compiler();
@@ -43,6 +43,26 @@ void main_define(Statement *statement){
         statement->type = MAIN_STATEMENT;
         compiler->main_statement = statement;
     }
+}
+
+void function_define(char *identifier, char *parameter, Statement *statement){
+    printf("function defined: %s, %s\n", identifier, parameter);
+    /*
+    Compiler *compiler;
+
+    compiler = get_current_compiler();
+    if(compiler->main_statement){
+        compile_error(ERROR_MAIN_ALREADY_DEFINED, statement->line_number);
+    }
+    else{
+        statement->type = MAIN_STATEMENT;
+        compiler->main_statement = statement;
+    }
+    */
+}
+
+void function_pattern_define(char *identifier, Expression *pattern, Statement *statement){
+    printf("function pattern defined: %s, %d\n", identifier, pattern->u.int_value);
 }
 
 /*
@@ -72,4 +92,14 @@ Expression *create_minus_expression(Expression *operand){
     exp = alloc_expression(MINUS_EXPRESSION);
     exp->u.minus_expression = operand;
     return exp;
+}
+
+Expression *create_call_expression(char *identifier, Expression *parameter){
+    printf("created call expression: %s\n", identifier);
+    return NULL;
+}
+
+Expression *create_identifier_expression(char *identifier){
+    printf("created identifier expression: %s\n", identifier);
+    return NULL;
 }

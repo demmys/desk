@@ -19,10 +19,10 @@ int main(int argc, char *argv[]){
     if(yyparse()){
         compile_error(ERROR_PARSE, get_current_compiler()->current_line_number);
     }
-    classfile = generate(compiler);
-    emit(classfile);
+    //classfile = generate(compiler);
+    //emit(classfile);
     dispose_compiler(compiler);
-    dispose_classfile(classfile);
+    //dispose_classfile(classfile);
     return 0;
 }
 

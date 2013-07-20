@@ -22,10 +22,6 @@ static void increment_line_number(){
 <INITIAL>")" return RP;
 <INITIAL>"=" return BOUND;
 <INITIAL>";" return SEMICOLON;
-    /*
-<INITIAL>"::" return DEF;
-<INITIAL>"->" return IMPL;
-    */
 <INITIAL>"main" return MAIN;
 
     /*
@@ -44,7 +40,9 @@ static void increment_line_number(){
     */
 
 <INITIAL>[a-z][A-Za-z_0-9]* {
-    //yylval.identifier = create_identifier(yytext);
+    char *identifier = compiler_storage_malloc(strlen(yytext) + 1);
+    strcpy(identifier, yytext);
+    yylval.identifier = identifier;
     return IDENTIFIER;
 }
     /*

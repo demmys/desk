@@ -13,9 +13,9 @@ extern int yyerror(char const *str);
 /*
  * terminal symbol
  */
-%token ADD SUB MUL DIV MOD LP RP BOUND SEMICOLON DEF IMPL MAIN
-%token <identifier> IDENTIFIER TYPE_IDENTIFIER
-%token <expression> INT_LITERAL FLOAT_LITERAL CHAR_LITERAL
+%token ADD SUB MUL DIV MOD LP RP BOUND SEMICOLON MAIN
+%token <identifier> IDENTIFIER
+%token <expression> INT_LITERAL
 /*
  * non-terminal symbol
  */
@@ -34,21 +34,31 @@ unit
  * definition
  */
 definition
-    : main_definition;
-    /* | function_definition; */
+    : main_definition
+    | function_definition;
 
+/*
+ * main definition
+ */
 main_definition
-    : MAIN BOUND statement {
-        main_define($3);
+    : MAIN LP IDENTIFIER RP BOUND statement {
+        main_define($3, $6);
+        // TODO think when constructor define
         constructor_define();
     };
 
 /*
+ * function or function pattern definition
+ */
 function_definition
-    : IDENTIFIER parameters BOUND statement {
-        function_define($1, $2, $3);
+    : IDENTIFIER LP IDENTIFIER RP BOUND statement {
+        function_define($1, $3, $6);
+    }
+    | IDENTIFIER LP INT_LITERAL RP BOUND statement {
+        function_pattern_define($1, $3, $6);
     };
 
+/*
 parameter_list
     : IDENTIFIER {
         $$ = create_parameter($1);
@@ -59,20 +69,7 @@ parameter_list
 */
 
 /*
- * type definition
- */
-/*
-type_definition
-    : IDENTIFIER DEF type SEMICOLON;
-
-type
-    : TYPE_IDENTIFIER
-    | LP type RP
-    | type IMPL type;
-*/
-
-/*
- * body statement(right-hand side)
+ * statement(right-hand side)
  */
 statement
     : expression SEMICOLON{
@@ -113,15 +110,20 @@ unary_expression
     };
 
 call_expression
-    : primary_expression;
+    : primary_expression
+    | IDENTIFIER LP RP {
+        $$ = create_call_expression($1, NULL);
+    }
+    | IDENTIFIER LP expression RP{
+        $$ = create_call_expression($1, $3);
+    };
 
 primary_expression
     : LP expression RP {
         $$ = $2;
     }
     | INT_LITERAL
-    /*
-    | FLOAT_LITERAL
-    | CHAR_LITERAL;
-    */
+    | IDENTIFIER{
+        $$ = create_identifier_expression($1);
+    };
 %%
