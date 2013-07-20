@@ -173,11 +173,18 @@ static void generate_expression_code(CodeAttribute *ca, Expression *ex){
         case INT_EXPRESSION:
             generate_int_expression(ca, ex->u.int_value);
             break;
+        case IDENTIFIER_EXPRESSION:
+            // TODO
+            break;
         case BINARY_EXPRESSION:
             generate_binary_expression(ca, ex->u.binary_expression);
             break;
         case MINUS_EXPRESSION:
             generate_minus_expression(ca, ex->u.minus_expression);
+            break;
+        case CALL_EXPRESSION:
+            // TODO
+            break;
     }
 }
 

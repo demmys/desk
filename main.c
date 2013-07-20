@@ -5,7 +5,7 @@ int main(int argc, char *argv[]){
     extern int yyparse(void);
     extern FILE *yyin;
     Compiler *compiler;
-    ClassFile *classfile;
+    //ClassFile *classfile;
     FILE *fp;
 
     // open file
