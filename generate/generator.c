@@ -50,6 +50,7 @@ static void generate_class_information(char *source_file, char *super_class){
     cf->emit_file = emit_name;
 }
 
+/*
 static Definition *generate_method(char *name, char *type, Statement *st){
     ClassFile *cf;
     Definition *dn;
@@ -57,6 +58,18 @@ static Definition *generate_method(char *name, char *type, Statement *st){
     cf = get_current_classfile();
     dn = add_definition(&(cf->methods), &(cf->methods_count), name, type);
     add_attribute_code(&(dn->attributes), &(dn->attributes_count), st);
+    return dn;
+}
+*/
+
+static Definition *generate_method(FunctionDefinition *fd){
+    ClassFile *cf;
+    Definition *dn;
+
+    cf = get_current_classfile();
+    dn = add_definition(&(cf->methods), &(cf->methods_count), fd->name, fd->descriptor);
+    // TODO think
+    //add_attribute_code(&(dn->attributes), &(dn->attributes_count), st);
     return dn;
 }
 
@@ -67,11 +80,8 @@ static void generate_class_methods(Compiler *compiler){
     /* constructor */
     //generate_method("<init>", "()V", compiler->constructor_statement);
     //dn = generate_method("main", "([Ljava/lang/String;)V", compiler->main_statement);
-    //dn->access_flags = dn->access_flags | ACC_STATIC;
     /* function */
     for(fd = compiler->function_list; fd; fd = fd->next){
-        // TODO function pattern
-        //generate_method(fd->name, fd->parameter_name ? "(I)I" : "()I", fd->statement);
         printf("%s(Int %s) %d\n", fd->name, fd->parameter_name, fd->statement->type);
         for(fp = fd->pattern_list; fp; fp = fp->next){
             printf("\tcase %d: %d\n", fp->pattern, fp->statement->type);

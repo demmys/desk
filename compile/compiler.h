@@ -76,6 +76,7 @@ struct FunctionPattern_tag{
 typedef struct FunctionDefinition_tag FunctionDefinition;
 struct FunctionDefinition_tag{
     char *name;
+    char *descriptor;
     char *parameter_name;
     Statement *statement;
     FunctionPattern *pattern_list;
@@ -84,6 +85,7 @@ struct FunctionDefinition_tag{
 };
 
 typedef struct{
+    // TODO count not in use
     int function_count;
     FunctionDefinition *function_list;
     int current_line_number;

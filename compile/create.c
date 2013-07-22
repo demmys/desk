@@ -31,7 +31,7 @@ void constructor_define(){
 
     compiler = get_current_compiler();
     statement = alloc_statement();
-    function_define("<init>", NULL, statement);
+    function_define("<init>", "()V", NULL, statement);
     statement->type = CONSTRUCTOR_STATEMENT;
 }
 
@@ -73,7 +73,7 @@ static int search_function_pattern(FunctionDefinition *fd, int pattern){
     return 0;
 }
 
-void function_define(char *identifier, char *parameter, Statement *statement){
+void function_define(char *identifier, char *descriptor, char *parameter, Statement *statement){
     Compiler *compiler;
     FunctionDefinition *fd;
 
@@ -97,6 +97,7 @@ void function_define(char *identifier, char *parameter, Statement *statement){
     (compiler->function_count)++;
 
     fd->name = identifier;
+    fd->descriptor = descriptor;
     fd->parameter_name = parameter;
     statement->type = FUNCTION_STATEMENT;
     fd->statement = statement;
@@ -135,7 +136,7 @@ void function_pattern_define(char *identifier, Expression *pattern, Statement *s
 }
 
 void main_define(char *parameter, Statement *statement){
-    function_define("main", parameter, statement);
+    function_define("main", "([Ljava/lang/String;)V", parameter, statement);
     statement->type = MAIN_STATEMENT;
 }
 

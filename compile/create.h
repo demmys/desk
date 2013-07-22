@@ -8,7 +8,7 @@
  */
 Expression* alloc_expression(ExpressionKind kind);
 void constructor_define();
-void function_define(char *identifier, char *parameter, Statement *statement);
+void function_define(char *identifier, char *descriptor, char *parameter, Statement *statement);
 void function_pattern_define(char *identifier, Expression *pattern, Statement *statement);
 void main_define(char *parameter, Statement *statement);
 void main_pattern_define(Expression *pattern, Statement *statement);
