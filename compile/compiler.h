@@ -24,11 +24,12 @@ typedef enum{
 } ExpressionKind;
 
 typedef enum{
+    NONE_TYPE_STATEMENT,
     MAIN_STATEMENT,
+    MAIN_PATTERN_STATEMENT,
     CONSTRUCTOR_STATEMENT,
     FUNCTION_STATEMENT,
-    FUNCTION_PATTERN_STATEMENT,
-    EXPRESSION_STATEMENT
+    FUNCTION_PATTERN_STATEMENT
 } StatementType;
 
 /*
@@ -61,10 +62,7 @@ struct Expression_tag{
 typedef struct{
     StatementType type;
     int line_number;
-    union{
-        int constructor;
-        Expression *expression;
-    } u;
+    Expression *expression;
 } Statement;
 
 typedef struct FunctionPattern_tag FunctionPattern;
@@ -86,8 +84,6 @@ struct FunctionDefinition_tag{
 };
 
 typedef struct{
-    Statement *main_statement;
-    Statement *constructor_statement;
     int function_count;
     FunctionDefinition *function_list;
     int current_line_number;

@@ -7,9 +7,8 @@ char *compile_error_format[] = {
     "unsupported file name.\nfile name must begin with a capital letter.\n",
     "unsupported file extension.\nfile extension must be \".desk\".\n",
     "%d: parse error.\n",
-    "%d: function main is already defined.\n",
     "%d: function %s with parameter %s is already defined.\n",
-    "%d: function %s not defined. cannot set pattern %d.\n"
+    "%d: function %s not defined. cannot set pattern %d.\n",
     "%d: function %s with pattern %d is already defined.\n"
 };
 

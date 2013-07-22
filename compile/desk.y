@@ -38,13 +38,20 @@ definition
     | function_definition;
 
 /*
- * main definition
+ * main or main pattern definition
  */
 main_definition
     : MAIN LP IDENTIFIER RP BOUND statement {
         main_define($3, $6);
-        // TODO think when constructor define
-        constructor_define();
+    }
+    | MAIN LP INT_LITERAL RP BOUND statement {
+        main_pattern_define($3, $6);
+    }
+    | MAIN LP RP BOUND statement{
+        main_define(NULL, $5);
+    }
+    | MAIN BOUND statement{
+        main_define(NULL, $3);
     };
 
 /*
@@ -56,6 +63,12 @@ function_definition
     }
     | IDENTIFIER LP INT_LITERAL RP BOUND statement {
         function_pattern_define($1, $3, $6);
+    }
+    | IDENTIFIER LP RP BOUND statement{
+        function_define($1, NULL, $5);
+    }
+    | IDENTIFIER BOUND statement{
+        function_define($1, NULL, $3);
     };
 
 /*

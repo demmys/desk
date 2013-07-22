@@ -1,8 +1,5 @@
 #include "generator.h"
 
-//TODO test
-void test_constant_pool();
-
 static int format_name(char *file_name){
     int classc = 0;
     char *i;
@@ -63,61 +60,31 @@ static Definition *generate_method(char *name, char *type, Statement *st){
     return dn;
 }
 
+static void generate_class_methods(Compiler *compiler){
+    FunctionDefinition *fd;
+    FunctionPattern *fp;
+
+    /* constructor */
+    //generate_method("<init>", "()V", compiler->constructor_statement);
+    //dn = generate_method("main", "([Ljava/lang/String;)V", compiler->main_statement);
+    //dn->access_flags = dn->access_flags | ACC_STATIC;
+    /* function */
+    for(fd = compiler->function_list; fd; fd = fd->next){
+        // TODO function pattern
+        //generate_method(fd->name, fd->parameter_name ? "(I)I" : "()I", fd->statement);
+        printf("%s(Int %s) %d\n", fd->name, fd->parameter_name, fd->statement->type);
+        for(fp = fd->pattern_list; fp; fp = fp->next){
+            printf("\tcase %d: %d\n", fp->pattern, fp->statement->type);
+        }
+    }
+}
+
 ClassFile *generate(Compiler *compiler){
     ClassFile *cf;
-    Definition *dn;
 
     cf = create_class_file();
     generate_class_information(compiler->source_file, "java/lang/Object");
-    generate_method("<init>", "()V", compiler->constructor_statement);
-    dn = generate_method("main", "([Ljava/lang/String;)V", compiler->main_statement);
-    dn->access_flags = dn->access_flags | ACC_STATIC;
-    //add_constant_utf8_info(attribute_name[ATTRIBUTE_LineNumberTable]);
-
-    //TODO test
-    //test_constant_pool();
+    generate_class_methods(compiler);
 
     return cf;
-}
-
-
-
-
-// TODO test
-void test_constant_pool(){
-    ClassFile *cf = get_current_classfile();
-    ConstantInfo *ci, *ci_temp;
-    int temp, i;
-
-    for(ci = cf->constant_pool, i = 0; ci; ci = ci->next, i++){
-        printf("index: %d\n", i + 1);
-        switch(ci->tag){
-            case CONSTANT_Utf8:
-                printf("\tUTF-8: %d, %s\n", ci->u.utf8_info.length, ci->u.utf8_info.value);
-                break;
-            case CONSTANT_Class:
-                temp = ci->u.cp_index;
-                printf("\tClass: %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
-                break;
-            case CONSTANT_Methodref:
-                temp = ci->u.reference_info.class_index;
-                printf("\tMethod: %d // ", temp);
-                temp = get_constant_info(temp)->u.cp_index;
-                printf("%s\n", get_constant_info(temp)->u.utf8_info.value);
-                ci_temp = get_constant_info(ci->u.reference_info.name_and_type_index);
-                temp = ci_temp->u.name_and_type_info.name_index;
-                printf("\t\t %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
-                temp = ci_temp->u.name_and_type_info.descriptor_index;
-                printf("\t\t, %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
-                break;
-            case CONSTANT_NameAndType:
-                temp = ci->u.name_and_type_info.name_index;
-                printf("\tNameAndType: %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
-                temp = ci->u.name_and_type_info.descriptor_index;
-                printf("\t\t, %d // %s\n", temp, get_constant_info(temp)->u.utf8_info.value);
-                break;
-            default:
-                printf("\ttag: %d\n", ci->tag);
-        }
-    }
 }

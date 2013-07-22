@@ -12,12 +12,13 @@ Expression* alloc_expression(ExpressionKind kind){
     return exp;
 }
 
-static Statement* alloc_statement(StatementType type){
+static Statement* alloc_statement(){
     Statement *st;
 
     st = compiler_storage_malloc(sizeof(Statement));
-    st->type = type;
+    st->type = NONE_TYPE_STATEMENT;
     st->line_number = get_current_compiler()->current_line_number;
+    st->expression = NULL;
     return st;
 }
 
@@ -26,12 +27,15 @@ static Statement* alloc_statement(StatementType type){
  */
 void constructor_define(){
     Compiler *compiler;
+    Statement *statement;
 
     compiler = get_current_compiler();
-    compiler->constructor_statement = alloc_statement(CONSTRUCTOR_STATEMENT);
-    compiler->constructor_statement->u.constructor = 0;
+    statement = alloc_statement();
+    function_define("<init>", NULL, statement);
+    statement->type = CONSTRUCTOR_STATEMENT;
 }
 
+/*
 void main_define(char *parameter, Statement *statement){
     Compiler *compiler;
 
@@ -44,6 +48,7 @@ void main_define(char *parameter, Statement *statement){
         compiler->main_statement = statement;
     }
 }
+*/
 
 static FunctionDefinition *search_function(char *identifier){
     Compiler *compiler;
@@ -89,6 +94,7 @@ void function_define(char *identifier, char *parameter, Statement *statement){
         compiler->function_list->prev = compiler->function_list;
         fd = compiler->function_list;
     }
+    (compiler->function_count)++;
 
     fd->name = identifier;
     fd->parameter_name = parameter;
@@ -105,9 +111,9 @@ void function_pattern_define(char *identifier, Expression *pattern, Statement *s
     pattern_value = pattern->u.int_value;
     fd = search_function(identifier);
     if(!fd)
-        compile_error(ERROR_FUNCTION_NOT_DEFINED, identifier, pattern_value);
+        compile_error(ERROR_FUNCTION_NOT_DEFINED, statement->line_number, identifier, pattern_value);
     if(search_function_pattern(fd, pattern_value))
-        compile_error(ERROR_FUNCTION_PATTERN_ALREADY_DEFINED, identifier, pattern_value);
+        compile_error(ERROR_FUNCTION_PATTERN_ALREADY_DEFINED, statement->line_number, identifier, pattern_value);
 
     if(fd->pattern_list){
         fp = compiler_storage_malloc(sizeof(FunctionPattern));
@@ -125,8 +131,19 @@ void function_pattern_define(char *identifier, Expression *pattern, Statement *s
 
     fp->pattern = pattern_value;
     statement->type = FUNCTION_PATTERN_STATEMENT;
-    fd->statement = statement;
+    fp->statement = statement;
 }
+
+void main_define(char *parameter, Statement *statement){
+    function_define("main", parameter, statement);
+    statement->type = MAIN_STATEMENT;
+}
+
+void main_pattern_define(Expression *pattern, Statement *statement){
+    function_pattern_define("main", pattern, statement);
+    statement->type = MAIN_PATTERN_STATEMENT;
+}
+
 
 /*
  * create methods
@@ -134,8 +151,8 @@ void function_pattern_define(char *identifier, Expression *pattern, Statement *s
 Statement *create_expression_statement(Expression *expression){
     Statement *st;
 
-    st = alloc_statement(EXPRESSION_STATEMENT);
-    st->u.expression = expression;
+    st = alloc_statement();
+    st->expression = expression;
     return st;
 }
 

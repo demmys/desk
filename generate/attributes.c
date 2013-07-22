@@ -207,10 +207,10 @@ static u4 create_attribute_code(CodeAttribute *ca, Statement *st){
             generate_constructor_code(ca);
             break;
         case MAIN_STATEMENT:
-            generate_main_code(ca, st->u.expression);
+            generate_main_code(ca, st->expression);
             break;
-        case EXPRESSION_STATEMENT:
-            generate_expression_code(ca, st->u.expression);
+        case FUNCTION_STATEMENT:
+            generate_expression_code(ca, st->expression);
             break;
         default:
             break;
