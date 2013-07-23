@@ -1,3 +1,7 @@
+/*
+ * Factorial.desk
+ */
+// this is Desk sample program
 
 main(x) = factorial(x);
 
