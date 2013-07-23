@@ -6,13 +6,6 @@
 /*
  * enumerated type
  */
-/*
-typedef enum{
-    INT_TYPE,
-    FLOAT_TYPE,
-    CHAR_TYPE
-} BasicType;
-*/
 
 typedef enum{
     ADD_OPERATOR,
@@ -24,62 +17,80 @@ typedef enum{
 
 typedef enum{
     INT_EXPRESSION,
-    /*FLOAT_EXPRESSION,
-    CHAR_EXPRESSION,*/
+    IDENTIFIER_EXPRESSION,
     BINARY_EXPRESSION,
-    MINUS_EXPRESSION
+    MINUS_EXPRESSION,
+    CALL_EXPRESSION
 } ExpressionKind;
 
 typedef enum{
+    NONE_TYPE_STATEMENT,
     MAIN_STATEMENT,
     CONSTRUCTOR_STATEMENT,
-    EXPRESSION_STATEMENT,
-    IF_STATEMENT
+    FUNCTION_STATEMENT,
+    FUNCTION_PATTERN_STATEMENT
 } StatementType;
 
 /*
  * struct declaration
  */
 typedef struct Expression_tag Expression;
-typedef struct Statement_tag Statement;
+typedef struct{
+    char *identifier;
+    Expression *parameter_expression;
+} CallExpression;
 
 typedef struct{
-    //int function_count;
-    Statement *main_statement; // FunctionList *function_list;
-    Statement *constructor_statement;
-    int current_line_number;
-    //InputMode input_mode;
-    //Encoding source_encoding;
-    char *source_file;
-    Storage *compile_storage;
-}Compiler;
-
-typedef struct {
     OperatorKind kind;
     Expression  *left;
     Expression  *right;
 } BinaryExpression;
+
 struct Expression_tag{
-    //BasicType type; // TypeSpecifier *type;
     ExpressionKind kind;
     int line_number;
     union{
         int int_value;
-        /*double float_value;
-        char char_value;*/
+        char *identifier;
         BinaryExpression binary_expression;
         Expression *minus_expression;
+        CallExpression call_expression;
     } u;
 };
 
-struct Statement_tag{
+typedef struct{
     StatementType type;
     int line_number;
-    union{
-        int constructor;
-        Expression *expression;
-    } u;
+    Expression *expression;
+} Statement;
+
+typedef struct FunctionPattern_tag FunctionPattern;
+struct FunctionPattern_tag{
+    int pattern;
+    Statement *statement;
+    FunctionPattern *prev;
+    FunctionPattern *next;
 };
+
+typedef struct FunctionDefinition_tag FunctionDefinition;
+struct FunctionDefinition_tag{
+    char *name;
+    char *descriptor;
+    char *parameter_name;
+    Statement *statement;
+    FunctionPattern *pattern_list;
+    FunctionDefinition *prev;
+    FunctionDefinition *next;
+};
+
+typedef struct{
+    // TODO count not in use
+    int function_count;
+    FunctionDefinition *function_list;
+    int current_line_number;
+    char *source_file;
+    Storage *compile_storage;
+}Compiler;
 
 
 /*

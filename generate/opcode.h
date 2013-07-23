@@ -32,6 +32,7 @@ typedef enum{
     ILOAD_2,
     ILOAD_3,
     ALOAD_0,
+    AALOAD,
     ISTORE,
     ISTORE_0,
     ISTORE_1,

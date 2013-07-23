@@ -2,12 +2,16 @@
 
 char *compile_error_format[] = {
     "dummy",
-    "no input files\n",
-    "%s: no such file or directory\n",
+    "no input files.\n",
+    "%s: no such file or directory.\n",
     "unsupported file name.\nfile name must begin with a capital letter.\n",
     "unsupported file extension.\nfile extension must be \".desk\".\n",
-    "%d: parse error\n",
-    "%d: function main is already defined\n"
+    "%d: parse error.\n",
+    "%d: function %s with parameter %s is already defined.\n",
+    "%d: function %s not defined. cannot set pattern %d.\n",
+    "%d: function %s with pattern %d is already defined.\n",
+    "%d: local valiable %s is not defined.\n",
+    "%d: function %s with argument not defined. cannot set pattern %d.\n"
 };
 
 char *system_error_format[] = {

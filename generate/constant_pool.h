@@ -60,6 +60,7 @@ u2 add_constant_utf8_info(char *value);
 u2 add_constant_class_info(char *name);
 u2 add_constant_name_and_type_info(char *name, char *type);
 u2 add_constant_method_info(char *class, char *name, char *type);
+u2 add_constant_method_info_with_class(u2 class_index, char *name, char *type);
 u2 add_constant_field_info(char *class, char *name, char *type);
 u2 add_constant_interface_method_info(char *class, char *name, char *type);
 ConstantInfo *get_constant_info(int index);

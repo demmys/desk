@@ -51,9 +51,9 @@ OpcodeInfo opcode_table[] = {
     { 0x2e, "iaload", 0, "", 0, 0 },
     { 0x2f, "laload", 0, "", 0, 0 },
     { 0x30, "faload", 0, "", 0, 0 },
-    { 0x31, "daload", 0, "", 0, 0 },
-    { 0x32, "aaload", 0, "", 0, 0 },
-    { 0x33, "baload", 0, "", 0, 0 },
+    { 0x31, "daload", 0, "", 0, 0 },*/
+    { 0x32, "aaload", 0, "", 1, 0 },
+    /*{ 0x33, "baload", 0, "", 0, 0 },
     { 0x34, "caload", 0, "", 0, 0 },
     { 0x35, "saload", 0, "", 0, 0 },*/
     { 0x36, "istore", 1, "b", 0, 1 },
@@ -184,9 +184,9 @@ OpcodeInfo opcode_table[] = {
     { 0xb3, "putstatic", 1, "s", 0, 0 },
     /*{ 0xb4, "getfield", 0, "", 0, 0 },
     { 0xb5, "putfield", 0, "", 0, 0 },*/
-    { 0xb6, "invokevirtual", 1, "s", 0, 0 },
-    { 0xb7, "invokespecial", 1, "s", 0, 0 },
-    { 0xb8, "invokestatic", 1, "s", 0, 0 },
+    { 0xb6, "invokevirtual", 1, "s", 1, 0 },
+    { 0xb7, "invokespecial", 1, "s", 1, 0 },
+    { 0xb8, "invokestatic", 1, "s", 1, 0 },
     /*{ 0xb9, "invokeinterface", 0, "", 0, 0 },
     { 0xba, "invokedynamic", 0, "", 0, 0 },
     { 0xbb, "new", 0, "", 0, 0 },

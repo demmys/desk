@@ -190,8 +190,18 @@ static u2 add_constant_reference_info(ConstantInfoTag tag, char *class, char *na
     return add_constant_info(tag, cindex, ntindex);
 }
 
+static u2 add_constant_reference_info_with_class(ConstantInfoTag tag, u2 class_index, char *name, char *type){
+    int ntindex;
+    ntindex = add_constant_name_and_type_info(name, type);
+    return add_constant_info(tag, class_index, ntindex);
+}
+
 u2 add_constant_method_info(char *class, char *name, char *type){
     return add_constant_reference_info(CONSTANT_Methodref, class, name, type);
+}
+
+u2 add_constant_method_info_with_class(u2 class_index, char *name, char *type){
+    return add_constant_reference_info_with_class(CONSTANT_Methodref, class_index, name, type);
 }
 
 u2 add_constant_field_info(char *class, char *name, char *type){

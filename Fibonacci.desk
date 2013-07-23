@@ -1,0 +1,10 @@
+/*
+ * Fibonacci.desk
+ */
+// this is Desk sample program
+
+main(x) = fibonacci(x);
+
+fibonacci(x) = fibonacci(x - 2) + fibonacci(x - 1);
+fibonacci(1) = 1;
+fibonacci(2) = 1;
