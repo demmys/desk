@@ -35,21 +35,6 @@ void constructor_define(){
     statement->type = CONSTRUCTOR_STATEMENT;
 }
 
-/*
-void main_define(char *parameter, Statement *statement){
-    Compiler *compiler;
-
-    compiler = get_current_compiler();
-    if(compiler->main_statement){
-        compile_error(ERROR_MAIN_ALREADY_DEFINED, statement->line_number);
-    }
-    else{
-        statement->type = MAIN_STATEMENT;
-        compiler->main_statement = statement;
-    }
-}
-*/
-
 static FunctionDefinition *search_function(char *identifier){
     Compiler *compiler;
     FunctionDefinition *fd;

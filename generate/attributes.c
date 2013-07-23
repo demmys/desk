@@ -234,17 +234,21 @@ static void generate_main_prefix_code(CodeAttribute *ca){
 
 static void generate_function_pattern_code(CodeAttribute *ca, FunctionPattern *fp){
     Code *jump_operator;
+    u2 start_pc;
 
     add_code(ca, ILOAD_0);
     if(fp->pattern){
-        jump_operator = add_code(ca, IFNE, 0);
-    }
-    else{
         generate_int_expression(ca, fp->pattern);
+        start_pc = ca->code_length;
         jump_operator = add_code(ca, IF_ICOMPNE, 0);
     }
+    else{
+        start_pc = ca->code_length;
+        jump_operator = add_code(ca, IFNE, 0);
+    }
     generate_expression_code(ca, fp->statement->expression);
-    jump_operator->next->u.operand_short = ca->code_length;
+    add_code(ca, IRETURN);
+    jump_operator->next->u.operand_short = ca->code_length - start_pc;
 }
 
 static u4 create_attribute_code(CodeAttribute *ca, Statement *statement, FunctionPattern *pattern_list){

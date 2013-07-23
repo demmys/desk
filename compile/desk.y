@@ -1,7 +1,7 @@
 %{
 #include "create.h"
 #define YYDEBUG 1
-#define FUNCTION_DESCRIPTOR "I(I)"
+#define FUNCTION_DESCRIPTOR "(I)I"
 
 extern int yylex(void);
 extern int yyerror(char const *str);
