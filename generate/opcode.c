@@ -184,9 +184,9 @@ OpcodeInfo opcode_table[] = {
     { 0xb3, "putstatic", 1, "s", 0, 0 },
     /*{ 0xb4, "getfield", 0, "", 0, 0 },
     { 0xb5, "putfield", 0, "", 0, 0 },*/
-    { 0xb6, "invokevirtual", 1, "s", 0, 0 },
-    { 0xb7, "invokespecial", 1, "s", 0, 0 },
-    { 0xb8, "invokestatic", 1, "s", 0, 0 },
+    { 0xb6, "invokevirtual", 1, "s", 1, 0 },
+    { 0xb7, "invokespecial", 1, "s", 1, 0 },
+    { 0xb8, "invokestatic", 1, "s", 1, 0 },
     /*{ 0xb9, "invokeinterface", 0, "", 0, 0 },
     { 0xba, "invokedynamic", 0, "", 0, 0 },
     { 0xbb, "new", 0, "", 0, 0 },

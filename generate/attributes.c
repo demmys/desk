@@ -193,8 +193,12 @@ static void generate_minus_expression(CodeAttribute *ca, Expression *me){
  * call function code generate method
  */
 static void generate_call_expression(CodeAttribute *ca, CallExpression *ce){
-    generate_expression_code(ca, ce->parameter_expression);
-    add_code(ca, INVOKESTATIC, add_constant_method_info_with_class(ca->this_class_index, ce->identifier, "(I)I"));
+    if(ce->parameter_expression){
+        generate_expression_code(ca, ce->parameter_expression);
+        add_code(ca, INVOKESTATIC, add_constant_method_info_with_class(ca->this_class_index, ce->identifier, "(I)I"));
+    } else{
+        add_code(ca, INVOKESTATIC, add_constant_method_info_with_class(ca->this_class_index, ce->identifier, "()I"));
+    }
 }
 
 /*
