@@ -176,8 +176,8 @@ static void generate_binary_expression(CodeAttribute *ca, BinaryExpression be){
  * valiable code generate method
  */
 static void generate_identifier_expression(CodeAttribute *ca, Expression *ex){
-    if(strcmp(ca->parameter_name, ex->u.identifier))
-        compile_error(ERROR_NOT_DEFINED_PARAMETER, ex->line_number, ex->u.identifier, ca->parameter_name);
+    if(!(ca->parameter_name) || strcmp(ca->parameter_name, ex->u.identifier))
+        compile_error(ERROR_NOT_DEFINED_LOCAL_VALIABLE, ex->line_number, ex->u.identifier);
     add_code(ca, ILOAD_0);
 }
 
@@ -216,7 +216,6 @@ static void generate_expression_code(CodeAttribute *ca, Expression *ex){
             break;
         case CALL_EXPRESSION:
             generate_call_expression(ca, &(ex->u.call_expression));
-            break;
     }
 }
 
@@ -224,7 +223,6 @@ static void generate_expression_code(CodeAttribute *ca, Expression *ex){
  * main prefix code generate method
  */
 static void generate_main_prefix_code(CodeAttribute *ca){
-    add_code(ca, GETSTATIC, add_constant_field_info("java/lang/System", "out", "Ljava/io/PrintStream;"));
     add_code(ca, ALOAD_0);
     add_code(ca, ICONST_0);
     add_code(ca, AALOAD);
@@ -260,7 +258,9 @@ static u4 create_attribute_code(CodeAttribute *ca, Statement *statement, Functio
 
     /* generate prefix code */
     if(statement->type == MAIN_STATEMENT){
-        generate_main_prefix_code(ca);
+        add_code(ca, GETSTATIC, add_constant_field_info("java/lang/System", "out", "Ljava/io/PrintStream;"));
+        if(ca->parameter_name)
+            generate_main_prefix_code(ca);
     }
 
     /* generate function pattern */

@@ -98,6 +98,8 @@ void function_pattern_define(char *identifier, Expression *pattern, Statement *s
     fd = search_function(identifier);
     if(!fd)
         compile_error(ERROR_FUNCTION_NOT_DEFINED, statement->line_number, identifier, pattern_value);
+    if(!fd->parameter_name)
+        compile_error(ERROR_FUNCTION_WITH_ARG_NOT_DEFINED, statement->line_number, identifier, pattern_value);
     if(search_function_pattern(fd, pattern_value))
         compile_error(ERROR_FUNCTION_PATTERN_ALREADY_DEFINED, statement->line_number, identifier, pattern_value);
 
