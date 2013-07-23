@@ -19,7 +19,7 @@ typedef enum{
 } AttributeTag;
 
 typedef enum{
-    CODE_OPCODE,
+    CODE_OPERATOR,
     CODE_OPERAND_BYTE,
     CODE_OPERAND_SHORT
 } CodeTag;
@@ -108,6 +108,8 @@ typedef struct{
     Exception *exception_table;
     u2 attributes_count;
     AttributeInfo *attributes;
+    u2 this_class_index;
+    char *parameter_name;
 } CodeAttribute;
 
 struct AttributeInfo_tag{
@@ -136,6 +138,6 @@ extern char *attribute_name[];
  * classfile_attributes.c function prototype
  */
 void add_attribute_source_file_info(AttributeInfo **ai_list, u2 *list_length, char *source_file);
-void add_attribute_code(AttributeInfo **ai_list, u2 *list_length, Statement *st);
+void add_attribute_code(AttributeInfo **ai_list, u2 *list_length, FunctionDefinition *fd, u2 this_class_index);
 
 #endif // CLASSFILE_ATTRIBUTES_H_INCLUDED

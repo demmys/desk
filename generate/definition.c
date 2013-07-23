@@ -21,7 +21,6 @@ Definition *add_definition(Definition **dn_list, u2 *list_length, char *name, ch
     /* set value to new definition */
     dn->access_flags = ACC_PUBLIC | ACC_STATIC;
     dn->name_index = add_constant_utf8_info(name);
-    // TODO 型を表現する文字列の配列を作っておき、typeで与えられた型を表すJVMの文字列を自動生成する
     dn->descriptor_index = add_constant_utf8_info(type);
     dn->attributes_count = 0;
     dn->attributes = NULL;

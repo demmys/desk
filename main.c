@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
     /* emit */
     //emit(classfile);
     dispose_compiler(compiler);
-    //dispose_classfile(classfile);
+    dispose_classfile(classfile);
     return 0;
 }
 

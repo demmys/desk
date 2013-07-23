@@ -111,7 +111,7 @@ static void emit_codes(Code *c){
                 swap16(&(c->u.operand_short));
                 emit_class_file(&(c->u.operand_short), 2);
                 break;
-            case CODE_OPCODE:
+            case CODE_OPERATOR:
                 emit_class_file(&(c->u.opcode->byte), 1);
         }
         c = c->next;

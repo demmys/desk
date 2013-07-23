@@ -51,9 +51,9 @@ OpcodeInfo opcode_table[] = {
     { 0x2e, "iaload", 0, "", 0, 0 },
     { 0x2f, "laload", 0, "", 0, 0 },
     { 0x30, "faload", 0, "", 0, 0 },
-    { 0x31, "daload", 0, "", 0, 0 },
-    { 0x32, "aaload", 0, "", 0, 0 },
-    { 0x33, "baload", 0, "", 0, 0 },
+    { 0x31, "daload", 0, "", 0, 0 },*/
+    { 0x32, "aaload", 0, "", 1, 0 },
+    /*{ 0x33, "baload", 0, "", 0, 0 },
     { 0x34, "caload", 0, "", 0, 0 },
     { 0x35, "saload", 0, "", 0, 0 },*/
     { 0x36, "istore", 1, "b", 0, 1 },

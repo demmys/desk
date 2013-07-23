@@ -26,7 +26,6 @@ typedef enum{
 typedef enum{
     NONE_TYPE_STATEMENT,
     MAIN_STATEMENT,
-    MAIN_PATTERN_STATEMENT,
     CONSTRUCTOR_STATEMENT,
     FUNCTION_STATEMENT,
     FUNCTION_PATTERN_STATEMENT
@@ -38,7 +37,7 @@ typedef enum{
 typedef struct Expression_tag Expression;
 typedef struct{
     char *identifier;
-    Expression *parameter;
+    Expression *parameter_expression;
 } CallExpression;
 
 typedef struct{

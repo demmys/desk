@@ -142,7 +142,7 @@ void main_define(char *parameter, Statement *statement){
 
 void main_pattern_define(Expression *pattern, Statement *statement){
     function_pattern_define("main", pattern, statement);
-    statement->type = MAIN_PATTERN_STATEMENT;
+    statement->type = FUNCTION_PATTERN_STATEMENT;
 }
 
 
@@ -180,7 +180,7 @@ Expression *create_call_expression(char *identifier, Expression *parameter){
 
     exp = alloc_expression(CALL_EXPRESSION);
     exp->u.call_expression.identifier = identifier;
-    exp->u.call_expression.parameter = parameter;
+    exp->u.call_expression.parameter_expression = parameter;
     return exp;
 }
 

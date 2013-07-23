@@ -9,7 +9,8 @@ char *compile_error_format[] = {
     "%d: parse error.\n",
     "%d: function %s with parameter %s is already defined.\n",
     "%d: function %s not defined. cannot set pattern %d.\n",
-    "%d: function %s with pattern %d is already defined.\n"
+    "%d: function %s with pattern %d is already defined.\n",
+    "%d: local valiable %s is not defined. only %s is defined.\n"
 };
 
 char *system_error_format[] = {
