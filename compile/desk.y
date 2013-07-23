@@ -1,7 +1,6 @@
 %{
 #include "create.h"
 #define YYDEBUG 1
-#define FUNCTION_DESCRIPTOR "(I)I"
 
 extern int yylex(void);
 extern int yyerror(char const *str);
@@ -60,16 +59,16 @@ main_definition
  */
 function_definition
     : IDENTIFIER LP IDENTIFIER RP BOUND statement {
-        function_define($1, FUNCTION_DESCRIPTOR, $3, $6);
+        function_define($1, "(I)I", $3, $6);
     }
     | IDENTIFIER LP INT_LITERAL RP BOUND statement {
         function_pattern_define($1, $3, $6);
     }
     | IDENTIFIER LP RP BOUND statement{
-        function_define($1, FUNCTION_DESCRIPTOR, NULL, $5);
+        function_define($1, "()I", NULL, $5);
     }
     | IDENTIFIER BOUND statement{
-        function_define($1, FUNCTION_DESCRIPTOR, NULL, $3);
+        function_define($1, "()I", NULL, $3);
     };
 
 /*

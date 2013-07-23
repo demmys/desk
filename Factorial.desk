@@ -1,0 +1,5 @@
+
+main(x) = factorial(x);
+
+factorial(x) = x * factorial(x - 1);
+factorial(0) = 1;

@@ -1,6 +1,0 @@
-/*
- * Sample.desk
- */
-// this is Desk sample program
-
-main = (314 + 15 - 92 / 6 * 5) % 3;
