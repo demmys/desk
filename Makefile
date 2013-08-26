@@ -8,6 +8,10 @@ OBJS = \
 	   generate.o\
 	   emit.o\
 	   main.o
+UTILS = utils/*.c utils/*.h
+COMPILE = compile/*.c compile/*.h compile/desk.*
+GENERATE = generate/*.c generate/*.h
+EMIT = emit/*.c emit/*.h
 MADE = $(TARGET)
 
 .SUFFIXES: .c .o
@@ -18,13 +22,13 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) -o $@ $^
 
-utils.o:
+utils.o: $(UTILS)
 	cd utils; $(MAKE);
-compile.o:
+compile.o: $(COMPILE)
 	cd compile; $(MAKE);
-generate.o:
+generate.o: $(GENERATE)
 	cd generate; $(MAKE);
-emit.o:
+emit.o: $(EMIT)
 	cd emit; $(MAKE);
 
 main.o: main.c emit/emitter.h compile/y.tab.c
