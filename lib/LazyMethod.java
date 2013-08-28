@@ -48,4 +48,17 @@ public class LazyMethod{
         }
         return fc2;
     }
+
+    /*
+     * range :: Int -> Int -> [Int]
+     */
+    public static Thunk.Array range(Thunk s, Thunk e){
+        int ns = s.eval().getInt();
+        int ne = e.eval().getInt();
+        Thunk.Array a = new Thunk.Array(ne - ns + 1);
+        while(ns <= ne){
+            a.apply(new LazyValue(ns++));
+        }
+        return a;
+    }
 }
