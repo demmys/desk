@@ -1,0 +1,8 @@
+/*
+ * Sum.desk
+ */
+// this is Desk sample program
+
+main x = sum [1..x];
+
+sum xs = foldl (+) 0 xs
