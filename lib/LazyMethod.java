@@ -2,13 +2,15 @@ public class LazyMethod{
     /*
      * map :: (a -> b) -> [a] -> [b]
      */
-    public static Thunk[] map(Thunk f, Thunk[] xs){
+    public static Thunk.Array map(Thunk f, Thunk.Array x){
+        Thunk[] xs = x.get();
+        Thunk.Array a = new Thunk.Array(xs.length);
         for(int i = 0; i < xs.length; i++){
             Thunk fc = f.clone();
             fc.apply(xs[i]);
-            xs[i] = fc;
+            a.apply(fc);
         }
-        return xs;
+        return a;
     }
 
     /*
@@ -47,6 +49,22 @@ public class LazyMethod{
             fc2.apply(xs[i], fc1);
         }
         return fc2;
+    }
+
+    /*
+     * zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+     */
+    public static Thunk.Array zipWith(Thunk f, Thunk.Array x, Thunk.Array y){
+        Thunk[] xs = x.get();
+        Thunk[] ys = y.get();
+        int min = Math.min(xs.length, ys.length);
+        Thunk.Array a = new Thunk.Array(min);
+        for(int i = 0; i < min; i++){
+            Thunk fc = f.clone();
+            fc.apply(xs[i], ys[i]);
+            a.apply(fc);
+        }
+        return a;
     }
 
     /*
