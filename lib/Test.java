@@ -9,7 +9,7 @@ public class Test{
 
         @Override
             public LazyValue eval(){
-                Thunk res = LazyMethod.foldl(new LazyOperator.Add(), new LazyValue(0), (Thunk.Array)args[0]);
+                Thunk res = LazyMethod.afoldl(new LazyOperator.Add(), new LazyValue(0), (LazyStructure.Array)args[0]);
                 return res.eval();
             }
     }
@@ -35,14 +35,11 @@ public class Test{
 
     public static void main(String[] args){
         int arg = Integer.parseInt(args[0]);
-        Thunk.Array a = LazyMethod.range(new LazyValue(1), new LazyValue(arg));
-        //Thunk sum = new Sum(a);
-        //int res = sum.eval().getInt();
-        //System.out.println(res);
-        Thunk.Array fib = LazyMethod.map(new Fibonacci(), a);
-        Thunk[] fibs = fib.get();
-        for(int i = 0; i < fibs.length; i++){
-            System.out.println(fibs[i].eval().getInt());
+        LazyStructure.Array a = LazyMethod.arange(new LazyValue(1), new LazyValue(arg));
+        LazyStructure.Array fibs = LazyMethod.amap(new Fibonacci(), a);
+        Thunk[] fs = fibs.get();
+        for(Thunk f : fs){
+            System.out.println(f.eval().getInt());
         }
     }
 }

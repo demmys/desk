@@ -1,10 +1,10 @@
 public class LazyMethod{
     /*
-     * map :: (a -> b) -> [a] -> [b]
+     * amap :: (a -> b) -> {a} -> {b}
      */
-    public static Thunk.Array map(Thunk f, Thunk.Array x){
+    public static LazyStructure.Array amap(Thunk f, LazyStructure.Array x){
         Thunk[] xs = x.get();
-        Thunk.Array a = new Thunk.Array(xs.length);
+        LazyStructure.Array a = new LazyStructure.Array(xs.length);
         for(int i = 0; i < xs.length; i++){
             Thunk fc = f.clone();
             fc.apply(xs[i]);
@@ -14,9 +14,9 @@ public class LazyMethod{
     }
 
     /*
-     * foldl :: (a -> b -> a) -> a -> [b] -> a
+     * afoldl :: (a -> b -> a) -> a -> {b} -> a
      */
-    public static Thunk foldl(Thunk f, Thunk z, Thunk.Array x){
+    public static Thunk afoldl(Thunk f, Thunk z, LazyStructure.Array x){
         Thunk[] xs = x.get();
         Thunk fc1, fc2 = z;
         for(int i = 0; i < xs.length; i++){
@@ -33,9 +33,9 @@ public class LazyMethod{
     }
 
     /*
-     * foldr :: (a -> b -> a) -> a -> [b] -> a
+     * afoldr :: (a -> b -> a) -> a -> {b} -> a
      */
-    public static Thunk foldr(Thunk f, Thunk z, Thunk.Array x){
+    public static Thunk afoldr(Thunk f, Thunk z, LazyStructure.Array x){
         Thunk[] xs = x.get();
         Thunk fc1, fc2 = z;
         for(int i = 0; i < xs.length; i++){
@@ -52,13 +52,13 @@ public class LazyMethod{
     }
 
     /*
-     * zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+     * azipWith :: (a -> b -> c) -> {a} -> {b} -> {c}
      */
-    public static Thunk.Array zipWith(Thunk f, Thunk.Array x, Thunk.Array y){
+    public static LazyStructure.Array azipWith(Thunk f, LazyStructure.Array x, LazyStructure.Array y){
         Thunk[] xs = x.get();
         Thunk[] ys = y.get();
         int min = Math.min(xs.length, ys.length);
-        Thunk.Array a = new Thunk.Array(min);
+        LazyStructure.Array a = new LazyStructure.Array(min);
         for(int i = 0; i < min; i++){
             Thunk fc = f.clone();
             fc.apply(xs[i], ys[i]);
@@ -68,12 +68,12 @@ public class LazyMethod{
     }
 
     /*
-     * range :: Int -> Int -> [Int]
+     * arange :: Int -> Int -> {Int}
      */
-    public static Thunk.Array range(Thunk s, Thunk e){
+    public static LazyStructure.Array arange(Thunk s, Thunk e){
         int ns = s.eval().getInt();
         int ne = e.eval().getInt();
-        Thunk.Array a = new Thunk.Array(ne - ns + 1);
+        LazyStructure.Array a = new LazyStructure.Array(ne - ns + 1);
         while(ns <= ne){
             a.apply(new LazyValue(ns++));
         }
